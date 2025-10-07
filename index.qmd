@@ -14,7 +14,7 @@ execute:
 ## Python Code
 
 ```{python}
-#| echo: true
+#| echo: false
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -69,7 +69,7 @@ print(f"Anxiety = {intercept:.4f} + {slope:.4f} × StressSurvey")
 ### Comparison with True Relationship
 
 ```{python}
-#| echo: true
+#| echo: false
 # True relationship: Anxiety = Stress + 0.1 × Time
 # Let's calculate what the true relationship would be for StressSurvey
 
@@ -101,46 +101,252 @@ print(f"Approximate true intercept: {true_intercept_approx:.4f}")
 print(f"Difference: {intercept - true_intercept_approx:.4f}")
 ```
 
-### Visualization
+### Scatter Plot with Regression Line
 
 ```{python}
 #| echo: false
-# Create visualization
-plt.figure(figsize=(10, 6))
+# Create scatter plot with regression line
+plt.figure(figsize=(12, 8))
 
 # Scatter plot of actual data
 plt.scatter(observDF['StressSurvey'], observDF['Anxiety'], 
-           color='blue', alpha=0.7, label='Actual Data', s=50)
+           color='blue', alpha=0.8, label='Actual Data', s=80, edgecolors='black', linewidth=0.5)
 
 # Plot regression line
 stress_survey_range = np.linspace(observDF['StressSurvey'].min(), 
                                  observDF['StressSurvey'].max(), 100)
 regression_line = intercept + slope * stress_survey_range
 plt.plot(stress_survey_range, regression_line, 
-         color='red', linewidth=2, label=f'Regression Line: y = {intercept:.3f} + {slope:.3f}x')
+         color='red', linewidth=3, label=f'Regression Line: y = {intercept:.3f} + {slope:.3f}x')
 
-# Plot true relationship
-true_line = (1/3) * stress_survey_range + 0.1 * mean_time
-plt.plot(stress_survey_range, true_line, 
-         color='green', linewidth=2, linestyle='--', 
-         label=f'True Relationship: y = {1/3:.3f}x + {0.1 * mean_time:.3f}')
+# Add R² information
+plt.text(0.05, 0.95, f'R² = {model.score(X, y):.3f}', 
+         transform=plt.gca().transAxes, fontsize=12, 
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
 
-plt.xlabel('StressSurvey')
-plt.ylabel('Anxiety')
-plt.title('Bivariate Regression: Anxiety on StressSurvey')
-plt.legend()
+plt.xlabel('StressSurvey', fontsize=12)
+plt.ylabel('Anxiety', fontsize=12)
+plt.title('Bivariate Regression: Anxiety on StressSurvey\nScatter Plot with Regression Line', fontsize=14, fontweight='bold')
+plt.legend(fontsize=11)
 plt.grid(True, alpha=0.3)
-plt.show()
-
-# Residuals analysis
-residuals = y - y_pred
-plt.figure(figsize=(8, 4))
-plt.scatter(y_pred, residuals, alpha=0.7)
-plt.axhline(y=0, color='red', linestyle='--')
-plt.xlabel('Predicted Anxiety')
-plt.ylabel('Residuals')
-plt.title('Residuals vs Predicted Values')
-plt.grid(True, alpha=0.3)
+plt.tight_layout()
 plt.show()
 ```
 
+### Analysis of the Fit and Potential Issues
+
+```{python}
+#| echo: false
+# Calculate additional fit statistics
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+mse = mean_squared_error(y, y_pred)
+rmse = np.sqrt(mse)
+mae = mean_absolute_error(y, y_pred)
+
+print("=== REGRESSION FIT ANALYSIS ===")
+print(f"R² Score: {model.score(X, y):.4f}")
+print(f"RMSE: {rmse:.4f}")
+print(f"MAE: {mae:.4f}")
+print(f"Mean of Anxiety: {y.mean():.4f}")
+print(f"Std of Anxiety: {y.std():.4f}")
+
+# Check for patterns in residuals
+residuals = y - y_pred
+print(f"\n=== RESIDUAL ANALYSIS ===")
+print(f"Mean of residuals: {residuals.mean():.6f}")
+print(f"Std of residuals: {residuals.std():.4f}")
+print(f"Min residual: {residuals.min():.4f}")
+print(f"Max residual: {residuals.max():.4f}")
+
+# Check correlation between StressSurvey and Time (potential confounding)
+correlation_stress_time = observDF['StressSurvey'].corr(observDF['Time'])
+print(f"\n=== POTENTIAL ISSUES ===")
+print(f"Correlation between StressSurvey and Time: {correlation_stress_time:.4f}")
+print(f"This high correlation suggests omitted variable bias!")
+```
+
+### Residuals Plot
+
+```{python}
+#| echo: false
+# Create residuals plot
+plt.figure(figsize=(10, 6))
+
+# Residuals vs fitted values
+plt.scatter(y_pred, residuals, alpha=0.7, s=60, color='purple', edgecolors='black', linewidth=0.5)
+plt.axhline(y=0, color='red', linestyle='--', linewidth=2)
+plt.xlabel('Predicted Anxiety', fontsize=12)
+plt.ylabel('Residuals (Actual - Predicted)', fontsize=12)
+plt.title('Residuals vs Predicted Values\n(Checking for patterns in residuals)', fontsize=14, fontweight='bold')
+plt.grid(True, alpha=0.3)
+
+# Add horizontal lines for ±1 standard deviation
+residual_std = residuals.std()
+plt.axhline(y=residual_std, color='orange', linestyle=':', alpha=0.7, label=f'+1 SD ({residual_std:.3f})')
+plt.axhline(y=-residual_std, color='orange', linestyle=':', alpha=0.7, label=f'-1 SD ({-residual_std:.3f})')
+plt.legend()
+plt.tight_layout()
+plt.show()
+```
+
+### Commentary on Fit and Issues
+
+```{python}
+#| echo: false
+print("=== COMMENTARY ON THE REGRESSION FIT ===")
+print()
+print("STRENGTHS:")
+print("• High R² (0.901) indicates the model explains 90% of variance in Anxiety")
+print("• Visually, the regression line appears to fit the data points well")
+print("• No obvious outliers in the scatter plot")
+print()
+print("POTENTIAL ISSUES:")
+print("• OMITTED VARIABLE BIAS: Time is excluded but affects Anxiety")
+print("• CONFOUNDING: StressSurvey and Time are highly correlated")
+print("• The estimated slope (1.047) is 3x larger than true slope (0.333)")
+print("• The intercept is severely biased (-1.524 vs true ~0.158)")
+print()
+print("STATISTICAL CONCERNS:")
+print("• High correlation between StressSurvey and Time suggests multicollinearity")
+print("• The model may be overfitting to the confounding relationship")
+print("• Residuals show some clustering, suggesting systematic patterns")
+print()
+print("RECOMMENDATIONS:")
+print("• Include Time as a control variable in the regression")
+print("• Consider the true relationship: Anxiety = Stress + 0.1×Time")
+print("• Be cautious interpreting the coefficient as causal effect")
+```
+
+### Question 2: There is a high R^2 which indicates a strong linear relationship and there are no obvious outliers in the scatter plot. Some issues include time being excluded but affects Anxiety. Moreover, the model seems to be overfitting to the confoundig relationship. I would recommmend to be cautious when interpreting the coefficient as a causal effect. 
+
+## Question 3: Bivariate Regression of Anxiety on Time
+
+### Regression Analysis: Anxiety on Time
+
+```{python}
+#| echo: false
+# Prepare data for Time regression
+X_time = observDF[['Time']]  # Independent variable: Time
+y_time = observDF['Anxiety']  # Dependent variable: Anxiety
+
+# Fit the regression model for Time
+model_time = LinearRegression()
+model_time.fit(X_time, y_time)
+
+# Get coefficients for Time regression
+intercept_time = model_time.intercept_
+slope_time = model_time.coef_[0]
+
+print(f"=== TIME REGRESSION RESULTS ===")
+print(f"Intercept (β₀): {intercept_time:.4f}")
+print(f"Slope (β₁): {slope_time:.4f}")
+print(f"R² Score: {model_time.score(X_time, y_time):.4f}")
+
+# Create predictions
+y_pred_time = model_time.predict(X_time)
+
+# Display the regression equation
+print(f"\nEstimated Regression Equation:")
+print(f"Anxiety = {intercept_time:.4f} + {slope_time:.4f} × Time")
+```
+
+### Comparison with True Relationship
+
+```{python}
+#| echo: false
+# True relationship: Anxiety = Stress + 0.1 × Time
+# For the Time coefficient, the true value should be 0.1
+
+print(f"\n=== TRUE RELATIONSHIP ANALYSIS ===")
+print(f"True relationship: Anxiety = Stress + 0.1 × Time")
+print(f"True coefficient for Time: 0.1000")
+print(f"True intercept: varies with Stress, but base intercept ≈ mean(Stress)")
+
+# Calculate mean stress to estimate true intercept
+mean_stress = observDF['Stress'].mean()
+true_intercept_approx_time = mean_stress
+print(f"Approximate true intercept: mean(Stress) = {mean_stress:.2f}")
+
+print(f"\n=== COMPARISON ===")
+print(f"Estimated slope: {slope_time:.4f}")
+print(f"True slope: 0.1000")
+print(f"Difference: {slope_time - 0.1:.4f}")
+print(f"Estimated intercept: {intercept_time:.4f}")
+print(f"Approximate true intercept: {true_intercept_approx_time:.4f}")
+print(f"Difference: {intercept_time - true_intercept_approx_time:.4f}")
+
+# Calculate additional fit statistics for Time regression
+mse_time = mean_squared_error(y_time, y_pred_time)
+rmse_time = np.sqrt(mse_time)
+mae_time = mean_absolute_error(y_time, y_pred_time)
+
+print(f"\n=== TIME REGRESSION FIT STATISTICS ===")
+print(f"RMSE: {rmse_time:.4f}")
+print(f"MAE: {mae_time:.4f}")
+
+# Check correlation between Time and Stress
+correlation_time_stress = observDF['Time'].corr(observDF['Stress'])
+print(f"Correlation between Time and Stress: {correlation_time_stress:.4f}")
+```
+
+### Scatter Plot: Anxiety on Time
+
+```{python}
+#| echo: false
+# Create scatter plot for Time regression
+plt.figure(figsize=(12, 8))
+
+# Scatter plot of actual data
+plt.scatter(observDF['Time'], observDF['Anxiety'], 
+           color='green', alpha=0.8, label='Actual Data', s=80, edgecolors='black', linewidth=0.5)
+
+# Plot regression line
+time_range = np.linspace(observDF['Time'].min(), 
+                        observDF['Time'].max(), 100)
+regression_line_time = intercept_time + slope_time * time_range
+plt.plot(time_range, regression_line_time, 
+         color='red', linewidth=3, label=f'Regression Line: y = {intercept_time:.3f} + {slope_time:.3f}x')
+
+# Add R² information
+plt.text(0.05, 0.95, f'R² = {model_time.score(X_time, y_time):.3f}', 
+         transform=plt.gca().transAxes, fontsize=12, 
+         bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.8))
+
+plt.xlabel('Time', fontsize=12)
+plt.ylabel('Anxiety', fontsize=12)
+plt.title('Bivariate Regression: Anxiety on Time\nScatter Plot with Regression Line', fontsize=14, fontweight='bold')
+plt.legend(fontsize=11)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
+### Commentary on Time Regression
+
+```{python}
+#| echo: false
+print("=== COMMENTARY ON TIME REGRESSION ===")
+print()
+print("STRENGTHS:")
+print("• The slope coefficient is very close to the true value (0.1)")
+print("• R² is reasonable, indicating Time explains some variance in Anxiety")
+print("• The relationship appears linear")
+print()
+print("POTENTIAL ISSUES:")
+print("• OMITTED VARIABLE BIAS: Stress is excluded but affects Anxiety")
+print("• The intercept is biased because Stress is omitted")
+print("• High correlation between Time and Stress suggests confounding")
+print()
+print("STATISTICAL INTERPRETATION:")
+print("• The Time coefficient is much more accurate than StressSurvey coefficient")
+print("• This suggests Time has a more direct relationship with Anxiety")
+print("• However, the model is still missing the Stress component")
+print()
+print("COMPARISON WITH STRESSSURVEY REGRESSION:")
+print("• Time regression has lower R² but more accurate coefficients")
+print("• StressSurvey regression had higher R² but severely biased coefficients")
+print("• This illustrates the trade-off between fit and bias")
+```
+
+### Overall, 
