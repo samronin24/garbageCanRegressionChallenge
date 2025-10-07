@@ -664,3 +664,62 @@ print(f"True intercept: 0.0000")
 **Conclusion:**
 Model 1 shows how high R² can be misleading when coefficients are biased due to multicollinearity, while Model 2 shows how proper variable selection leads to perfect results. **Variable choice and multicollinearity assessment are more important than model complexity** for reliable statistical inference.
 
+#### Question 8: Reflect on Real World Implications
+
+### Answer
+
+**Popular Press Headlines:**
+
+**Model 1 (StressSurvey + Time) Headlines:**
+- **"BREAKING: Time Spent on Social Media INCREASES Anxiety by 278% - New Study Shows"**
+- **"Social Media Time Linked to Massive Anxiety Spike, Researchers Find"**
+- **"Study: Every Hour on Social Media Boosts Anxiety Levels Dramatically"**
+- **"Social Media Time 'Significantly' Increases Anxiety Risk, New Research Reveals"**
+
+**Model 2 (Stress + Time) Headlines:**
+- **"New Study: Time on Social Media Has Minimal Impact on Anxiety"**
+- **"Research Shows Social Media Time Barely Affects Anxiety Levels"**
+- **"Study Finds Small Link Between Social Media Time and Anxiety"**
+- **"Social Media Time Has 'Negligible' Effect on Anxiety, Research Shows"**
+
+**Audience Interpretation Analysis:**
+
+**Typical Parent (Confirmation Bias):**
+- **Will believe Model 1** because it confirms their existing fears about social media
+- **Headlines about "278% increase"** will be shared widely on social media
+- **"I knew it!"** reaction - validates pre-existing concerns about children's screen time
+- **Will use Model 1 results** to justify restricting social media access
+- **Confirmation bias** makes them more likely to trust the dramatic results
+
+**Social Media Executives (Facebook, Instagram, TikTok):**
+- **Will prefer Model 2** because it minimizes the perceived harm of their platforms
+- **"Minimal impact"** and **"negligible effect"** headlines** are much more favorable
+- **Will use Model 2 results** in their defense against regulation
+- **Will fund more research** similar to Model 2 to counter negative findings
+- **Will highlight Model 2** in their transparency reports and safety initiatives
+
+**Why This Matters:**
+
+1. **Model 1 Results Are More "Newsworthy"**
+   - **Dramatic numbers** (278% increase) get more clicks and shares
+   - **Fear-based headlines** generate more engagement
+   - **Confirmation bias** makes people more likely to believe and share
+
+2. **Model 2 Results Are More "Business-Friendly"**
+   - **Minimal harm** doesn't threaten business models
+   - **Lower regulatory pressure** from governments
+   - **Better for investor confidence** and stock prices
+
+3. **The Real Problem:**
+   - **Both models are based on the same data** but tell completely different stories
+   - **Model 1 is statistically wrong** but more attention-grabbing
+   - **Model 2 is statistically correct** but less dramatic
+   - **Popular press will likely focus on Model 1** because it's more sensational
+
+4. **Confirmation Bias in Action:**
+   - **Parents already believe** social media is harmful, so Model 1 confirms their bias
+   - **Tech executives already believe** their platforms are safe, so Model 2 confirms their bias
+   - **Both groups will cherry-pick** the model that supports their existing beliefs
+
+**Conclusion:**
+This demonstrates how **statistical results can be weaponized** by different stakeholders to support their agendas. Model 1's dramatic but incorrect results will likely dominate popular press coverage due to their sensational nature, while Model 2's accurate but less dramatic results will be preferred by tech companies. **Confirmation bias ensures both groups will focus on the model that supports their existing beliefs**, regardless of statistical accuracy.
