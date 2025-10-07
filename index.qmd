@@ -9,10 +9,6 @@ execute:
 
 # Garbage Can Regression Challenge
 
-**Choose R or Python and delete the other code chunk.**
-
-## Python Code
-
 ```{python}
 #| echo: false
 import pandas as pd
@@ -38,7 +34,7 @@ print(observDF)
 ## Your Analysis
 
 ### Bivariate Regression: Anxiety on StressSurvey
-
+### Question 1: Run a bivariate regression of Anxiety on StressSurvey. What are the estimated coefficients? How do they compare to the true relationship?
 ```{python}
 #| echo: false
 # Prepare data for regression
@@ -66,47 +62,47 @@ print(f"\nEstimated Regression Equation:")
 print(f"Anxiety = {intercept:.4f} + {slope:.4f} × StressSurvey")
 ```
 
-### Comparison with True Relationship
+### Answer
 
-```{python}
-#| echo: false
-# True relationship: Anxiety = Stress + 0.1 × Time
-# Let's calculate what the true relationship would be for StressSurvey
+**Estimated Coefficients:**
+- **Intercept (β₀)**: -1.5240
+- **Slope (β₁)**: 1.0470
+- **R² Score**: 0.9011
 
-# Since StressSurvey appears to be a scaled version of Stress (StressSurvey = 3 × Stress)
-# The true relationship in terms of StressSurvey would be:
-# Anxiety = (StressSurvey/3) + 0.1 × Time
+**True Relationship:**
+The true relationship in the data is: **Anxiety = Stress + 0.1 × Time**
 
-# Calculate true values for comparison
-true_anxiety = observDF['Stress'] + 0.1 * observDF['Time']
+Since StressSurvey = 3 × Stress, the true relationship in terms of StressSurvey is:
+**Anxiety = (StressSurvey/3) + 0.1 × Time**
 
-print(f"\nTrue Relationship Analysis:")
-print(f"True relationship: Anxiety = Stress + 0.1 × Time")
-print(f"Since StressSurvey = 3 × Stress, true relationship in terms of StressSurvey is:")
-print(f"Anxiety = (StressSurvey/3) + 0.1 × Time")
-print(f"True slope coefficient for StressSurvey: 1/3 = {1/3:.4f}")
-print(f"True intercept: varies with Time, but base intercept ≈ 0.1 × mean(Time)")
+Therefore:
+- **True StressSurvey coefficient**: 1/3 = 0.3333
+- **True Time coefficient**: 0.1000
+- **True intercept**: 0.0000 (no constant term in true relationship)
 
-# Calculate mean time to estimate true intercept
-mean_time = observDF['Time'].mean()
-true_intercept_approx = 0.1 * mean_time
-print(f"Approximate true intercept: 0.1 × {mean_time:.2f} = {true_intercept_approx:.4f}")
+**Comparison to True Relationship:**
 
-print(f"\nComparison:")
-print(f"Estimated slope: {slope:.4f}")
-print(f"True slope: {1/3:.4f}")
-print(f"Difference: {slope - (1/3):.4f}")
-print(f"Estimated intercept: {intercept:.4f}")
-print(f"Approximate true intercept: {true_intercept_approx:.4f}")
-print(f"Difference: {intercept - true_intercept_approx:.4f}")
-```
+| Coefficient | Estimated | True | Difference | Bias |
+|-------------|-----------|------|------------|------|
+| **StressSurvey** | 1.0470 | 0.3333 | +0.7137 | **3.1x too large** |
+| **Intercept** | -1.5240 | ~0.158 | -1.6820 | **Severely biased** |
 
+**Key Findings:**
+The regression shows significant **omitted variable bias**. The estimated slope coefficient (1.047) is **3.1 times larger** than the true slope (0.333) because:
+
+1. **Time is omitted** from the regression, but it's part of the true relationship
+2. **StressSurvey and Time are correlated** in this dataset (correlation = 0.882)
+3. The regression is **confounding** the effect of StressSurvey with the effect of Time
+
+This is a classic example of how **omitted variable bias** can lead to severely inflated coefficient estimates, even when the model appears to fit well (R² = 0.901).
+ 
+## Question 2: Create a scatter plot with the regression line showing the relationship between StressSurvey and Anxiety. Comment on the fit and any potential issues.
 ### Scatter Plot with Regression Line
 
 ```{python}
 #| echo: false
 # Create scatter plot with regression line
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(8, 6))
 
 # Scatter plot of actual data
 plt.scatter(observDF['StressSurvey'], observDF['Anxiety'], 
@@ -133,94 +129,56 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Analysis of the Fit and Potential Issues
+### Answer
 
-```{python}
-#| echo: false
-# Calculate additional fit statistics
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+**Fit Assessment:**
 
-mse = mean_squared_error(y, y_pred)
-rmse = np.sqrt(mse)
-mae = mean_absolute_error(y, y_pred)
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| **R² Score** | 0.901 | High explanatory power (90% of variance explained) |
+| **RMSE** | 1.47 | Moderate prediction errors |
+| **MAE** | 1.23 | Mean absolute error of 1.23 units |
+| **Residuals Mean** | ~0.000 | No systematic bias in residuals |
 
-print("=== REGRESSION FIT ANALYSIS ===")
-print(f"R² Score: {model.score(X, y):.4f}")
-print(f"RMSE: {rmse:.4f}")
-print(f"MAE: {mae:.4f}")
-print(f"Mean of Anxiety: {y.mean():.4f}")
-print(f"Std of Anxiety: {y.std():.4f}")
+**Visual Assessment:**
+- **Strong linear relationship** is clearly visible in the scatter plot
+- **Regression line fits well** through the data points
+- **No obvious outliers** in the data
+- **Good spread** of data points around the regression line
 
-# Check for patterns in residuals
-residuals = y - y_pred
-print(f"\n=== RESIDUAL ANALYSIS ===")
-print(f"Mean of residuals: {residuals.mean():.6f}")
-print(f"Std of residuals: {residuals.std():.4f}")
-print(f"Min residual: {residuals.min():.4f}")
-print(f"Max residual: {residuals.max():.4f}")
+**Critical Issues Identified:**
 
-# Check correlation between StressSurvey and Time (potential confounding)
-correlation_stress_time = observDF['StressSurvey'].corr(observDF['Time'])
-print(f"\n=== POTENTIAL ISSUES ===")
-print(f"Correlation between StressSurvey and Time: {correlation_stress_time:.4f}")
-print(f"This high correlation suggests omitted variable bias!")
-```
+1. **Severe Omitted Variable Bias**
+   - Time variable is excluded but affects Anxiety
+   - Estimated slope (1.047) is **3.1x larger** than true slope (0.333)
+   - Intercept is severely biased (-1.524 vs true ~0.158)
 
-### Residuals Plot
+2. **Confounding Problem**
+   - StressSurvey and Time are highly correlated (r = 0.882)
+   - Regression captures Time's effect through StressSurvey
+   - This creates a **spurious relationship**
 
-```{python}
-#| echo: false
-# Create residuals plot
-plt.figure(figsize=(10, 6))
+3. **Misleading High R²**
+   - R² = 0.901 suggests excellent fit
+   - But this is **misleading** because it's capturing confounding effects
+   - High R² masks the severe coefficient bias
 
-# Residuals vs fitted values
-plt.scatter(y_pred, residuals, alpha=0.7, s=60, color='purple', edgecolors='black', linewidth=0.5)
-plt.axhline(y=0, color='red', linestyle='--', linewidth=2)
-plt.xlabel('Predicted Anxiety', fontsize=12)
-plt.ylabel('Residuals (Actual - Predicted)', fontsize=12)
-plt.title('Residuals vs Predicted Values\n(Checking for patterns in residuals)', fontsize=14, fontweight='bold')
-plt.grid(True, alpha=0.3)
+**Statistical Concerns:**
+- **Residual clustering** suggests systematic patterns
+- **Model overfitting** to the confounding relationship
+- **Coefficients are not interpretable** as causal effects
 
-# Add horizontal lines for ±1 standard deviation
-residual_std = residuals.std()
-plt.axhline(y=residual_std, color='orange', linestyle=':', alpha=0.7, label=f'+1 SD ({residual_std:.3f})')
-plt.axhline(y=-residual_std, color='orange', linestyle=':', alpha=0.7, label=f'-1 SD ({-residual_std:.3f})')
-plt.legend()
-plt.tight_layout()
-plt.show()
-```
+**Recommendations:**
+- **Include Time as a control variable** in the regression
+- **Be extremely cautious** interpreting the StressSurvey coefficient
+- **Consider the true relationship**: Anxiety = Stress + 0.1×Time
+- **Avoid causal interpretation** of the coefficient
 
-### Commentary on Fit and Issues
+**Conclusion:**
+While the scatter plot shows a strong visual relationship and high R², this is a classic example of **omitted variable bias**. The regression line appears to fit well, but the coefficients are severely biased due to the confounding effect of the omitted Time variable. The high R² is misleading and masks the fundamental statistical problems with this model specification.
 
-```{python}
-#| echo: false
-print("=== COMMENTARY ON THE REGRESSION FIT ===")
-print()
-print("STRENGTHS:")
-print("• High R² (0.901) indicates the model explains 90% of variance in Anxiety")
-print("• Visually, the regression line appears to fit the data points well")
-print("• No obvious outliers in the scatter plot")
-print()
-print("POTENTIAL ISSUES:")
-print("• OMITTED VARIABLE BIAS: Time is excluded but affects Anxiety")
-print("• CONFOUNDING: StressSurvey and Time are highly correlated")
-print("• The estimated slope (1.047) is 3x larger than true slope (0.333)")
-print("• The intercept is severely biased (-1.524 vs true ~0.158)")
-print()
-print("STATISTICAL CONCERNS:")
-print("• High correlation between StressSurvey and Time suggests multicollinearity")
-print("• The model may be overfitting to the confounding relationship")
-print("• Residuals show some clustering, suggesting systematic patterns")
-print()
-print("RECOMMENDATIONS:")
-print("• Include Time as a control variable in the regression")
-print("• Consider the true relationship: Anxiety = Stress + 0.1×Time")
-print("• Be cautious interpreting the coefficient as causal effect")
-```
 
-### Question 2: There is a high R^2 which indicates a strong linear relationship and there are no obvious outliers in the scatter plot. Some issues include time being excluded but affects Anxiety. Moreover, the model seems to be overfitting to the confoundig relationship. I would recommmend to be cautious when interpreting the coefficient as a causal effect. 
-
-## Question 3: Bivariate Regression of Anxiety on Time
+## Question 3: Run a bivariate regression of Anxiety on Time. What are the estimated coefficients? How do they compare to the true relationship?
 
 ### Regression Analysis: Anxiety on Time
 
@@ -251,51 +209,59 @@ print(f"\nEstimated Regression Equation:")
 print(f"Anxiety = {intercept_time:.4f} + {slope_time:.4f} × Time")
 ```
 
-### Comparison with True Relationship
+### Answer
 
-```{python}
-#| echo: false
-# True relationship: Anxiety = Stress + 0.1 × Time
-# For the Time coefficient, the true value should be 0.1
+**Estimated Coefficients:**
+- **Intercept (β₀)**: -3.6801
+- **Slope (β₁)**: 5.3406
+- **R² Score**: 0.5630
 
-print(f"\n=== TRUE RELATIONSHIP ANALYSIS ===")
-print(f"True relationship: Anxiety = Stress + 0.1 × Time")
-print(f"True coefficient for Time: 0.1000")
-print(f"True intercept: varies with Stress, but base intercept ≈ mean(Stress)")
+**True Relationship:**
+The true relationship in the data is: **Anxiety = Stress + 0.1 × Time**
 
-# Calculate mean stress to estimate true intercept
-mean_stress = observDF['Stress'].mean()
-true_intercept_approx_time = mean_stress
-print(f"Approximate true intercept: mean(Stress) = {mean_stress:.2f}")
+Therefore:
+- **True Time coefficient**: 0.1000
+- **True intercept**: varies with Stress, but base intercept ≈ mean(Stress) = 4.60
 
-print(f"\n=== COMPARISON ===")
-print(f"Estimated slope: {slope_time:.4f}")
-print(f"True slope: 0.1000")
-print(f"Difference: {slope_time - 0.1:.4f}")
-print(f"Estimated intercept: {intercept_time:.4f}")
-print(f"Approximate true intercept: {true_intercept_approx_time:.4f}")
-print(f"Difference: {intercept_time - true_intercept_approx_time:.4f}")
+**Comparison to True Relationship:**
 
-# Calculate additional fit statistics for Time regression
-mse_time = mean_squared_error(y_time, y_pred_time)
-rmse_time = np.sqrt(mse_time)
-mae_time = mean_absolute_error(y_time, y_pred_time)
+| Coefficient | Estimated | True | Difference | Bias |
+|-------------|-----------|------|------------|------|
+| **Time** | 5.3406 | 0.1000 | +5.2406 | **53.4x too large** |
+| **Intercept** | -3.6801 | ~4.60 | -8.2801 | **Severely biased** |
 
-print(f"\n=== TIME REGRESSION FIT STATISTICS ===")
-print(f"RMSE: {rmse_time:.4f}")
-print(f"MAE: {mae_time:.4f}")
+**Key Findings:**
+The regression shows **dramatically worse omitted variable bias** than the StressSurvey regression. The estimated Time coefficient (5.341) is **53.4 times larger** than the true coefficient (0.1) because:
 
-# Check correlation between Time and Stress
-correlation_time_stress = observDF['Time'].corr(observDF['Stress'])
-print(f"Correlation between Time and Stress: {correlation_time_stress:.4f}")
-```
+1. **Stress is omitted** from the regression, but it's the primary driver of Anxiety
+2. **Time and Stress are highly correlated** (r = 0.744)
+3. The regression is **confounding** the effect of Time with the effect of Stress
+4. **The intercept has the wrong sign** (-3.68 vs true ~4.6)
 
-### Scatter Plot: Anxiety on Time
+**Critical Issues:**
+- **Slope coefficient is 53x too large** (5.34 vs 0.1)
+- **Intercept is severely biased** and has wrong sign
+- **Lower R² (0.563)** compared to StressSurvey regression (0.901)
+- **Time appears to have a massive effect** on Anxiety, but this is spurious
+
+**Comparison with StressSurvey Regression:**
+- **StressSurvey**: slope = 1.047 (3x true), R² = 0.901
+- **Time**: slope = 5.341 (53x true), R² = 0.563
+- **Time regression has much worse bias** but lower R²
+- This demonstrates that **omitted variable bias can be much more severe** when the omitted variable (Stress) has a stronger relationship with the outcome than the included variable (Time)
+
+**Conclusion:**
+This is an extreme example of omitted variable bias. The Time coefficient is **53 times too large** because the regression is capturing the confounding effect of the omitted Stress variable through Time. The model appears to show Time has a massive effect on Anxiety, but this is entirely spurious due to the omitted variable problem.
+
+
+## Question 4: Create a scatter plot with the regression line showing the relationship between Time and Anxiety. Comment on the fit and any potential issues.
+
+### Scatter Plot with Regression Line
 
 ```{python}
 #| echo: false
 # Create scatter plot for Time regression
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(8, 6))
 
 # Scatter plot of actual data
 plt.scatter(observDF['Time'], observDF['Anxiety'], 
@@ -322,165 +288,63 @@ plt.tight_layout()
 plt.show()
 ```
 
-### Commentary on Time Regression
+### Answer
 
-```{python}
-#| echo: false
-print("=== COMMENTARY ON TIME REGRESSION ===")
-print()
-print("STRENGTHS:")
-print("• The slope coefficient is very close to the true value (0.1)")
-print("• R² is reasonable, indicating Time explains some variance in Anxiety")
-print("• The relationship appears linear")
-print()
-print("POTENTIAL ISSUES:")
-print("• OMITTED VARIABLE BIAS: Stress is excluded but affects Anxiety")
-print("• The intercept is biased because Stress is omitted")
-print("• High correlation between Time and Stress suggests confounding")
-print()
-print("STATISTICAL INTERPRETATION:")
-print("• The Time coefficient is much more accurate than StressSurvey coefficient")
-print("• This suggests Time has a more direct relationship with Anxiety")
-print("• However, the model is still missing the Stress component")
-print()
-print("COMPARISON WITH STRESSSURVEY REGRESSION:")
-print("• Time regression has lower R² but more accurate coefficients")
-print("• StressSurvey regression had higher R² but severely biased coefficients")
-print("• This illustrates the trade-off between fit and bias")
-```
+**Fit Assessment:**
 
-### Overall, the estimated coefficients include intercept: -3.6801, slope= 5.3406, and R^2 score: 0.5630. The difference between estimated and true slope is +5.2406 so the estimated slope is 53 times larger than true slope. The intercept difference is -8.2801 so the estimated intercept is severly biased. This shows that omitted variable bias can be much more siginificant when the omitted variable, Stress, has a stronger relationship with the outcome Anxiety than the included variable (Time).
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| **R² Score** | 0.563 | Moderate explanatory power (56% of variance explained) |
+| **RMSE** | 3.09 | Substantial prediction errors |
+| **MAE** | 2.56 | Mean absolute error of 2.56 units |
+| **Residuals Mean** | ~0.000 | No systematic bias in residuals |
 
-## Question 4: Visualization of Bivariate Relationship - Time and Anxiety
+**Visual Assessment:**
+- **Data points cluster by Stress levels**, clearly showing the confounding effect
+- **Regression line has extremely steep slope** (5.34) vs true slope (0.1)
+- **Line appears to connect different stress clusters** rather than show Time effect
+- **No obvious outliers** but clear clustering patterns
 
-### Enhanced Scatter Plot with Regression Line
+**Critical Issues Identified:**
 
-```{python}
-#| echo: false
-# Create comprehensive scatter plot for Time regression
-plt.figure(figsize=(14, 10))
+1. **Extreme Omitted Variable Bias**
+   - Stress is the primary driver of Anxiety but is excluded
+   - Estimated slope (5.341) is **53.4x larger** than true slope (0.1)
+   - Intercept is severely biased (-3.68 vs true ~4.6)
 
-# Scatter plot of actual data with different colors for different stress levels
-stress_levels = observDF['Stress'].unique()
-colors = ['lightblue', 'orange', 'green', 'red', 'purple']
-for i, stress_level in enumerate(stress_levels):
-    mask = observDF['Stress'] == stress_level
-    plt.scatter(observDF.loc[mask, 'Time'], observDF.loc[mask, 'Anxiety'], 
-               color=colors[i % len(colors)], alpha=0.8, s=100, 
-               label=f'Stress Level {stress_level}', edgecolors='black', linewidth=0.5)
+2. **Severe Confounding Problem**
+   - Time and Stress correlation = 0.744 (very high!)
+   - Regression captures Stress effect through Time
+   - This creates a **completely spurious relationship**
 
-# Plot regression line
-time_range = np.linspace(observDF['Time'].min(), 
-                        observDF['Time'].max(), 100)
-regression_line_time = intercept_time + slope_time * time_range
-plt.plot(time_range, regression_line_time, 
-         color='red', linewidth=4, label=f'Regression Line: y = {intercept_time:.2f} + {slope_time:.2f}x')
+3. **Misleading Moderate R²**
+   - R² = 0.563 suggests moderate fit
+   - But this is **misleading** because it's capturing confounding effects
+   - Lower R² than StressSurvey regression (0.901) but worse bias
 
-# Plot true relationship line (if we could isolate Time effect)
-true_time_line = 0.1 * time_range  # True Time coefficient is 0.1
-plt.plot(time_range, true_time_line, 
-         color='green', linewidth=3, linestyle='--', 
-         label='True Time Effect: y = 0.1x')
+**Statistical Concerns:**
+- **Residual clustering** by stress levels suggests systematic bias
+- **Model overfitting** to the confounding relationship
+- **Coefficients are completely meaningless** as causal effects
+- **Time appears to have massive effect** on Anxiety, but this is entirely spurious
 
-# Add R² and statistics information
-plt.text(0.02, 0.98, f'R² = {model_time.score(X_time, y_time):.3f}\nRMSE = {rmse_time:.2f}\nMAE = {mae_time:.2f}', 
-         transform=plt.gca().transAxes, fontsize=11, 
-         bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9),
-         verticalalignment='top')
+**Comparison with StressSurvey Regression:**
+- **StressSurvey**: R² = 0.901, slope = 1.047 (3x true)
+- **Time**: R² = 0.563, slope = 5.341 (53x true)
+- **Time regression has much worse bias** but lower R²
+- **Both suffer from omitted variable bias**, but Time is more severely affected
 
-plt.xlabel('Time', fontsize=14, fontweight='bold')
-plt.ylabel('Anxiety', fontsize=14, fontweight='bold')
-plt.title('Bivariate Regression: Anxiety on Time\nScatter Plot with Regression Line and Stress Level Clustering', 
-          fontsize=16, fontweight='bold')
-plt.legend(fontsize=10, loc='upper left')
-plt.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.show()
-```
+**Recommendations:**
+- **Include Stress as a control variable** in the regression
+- **Be extremely cautious** interpreting the Time coefficient
+- **Consider the true relationship**: Anxiety = Stress + 0.1×Time
+- **Avoid any causal interpretation** of the coefficient
 
-### Residuals Analysis for Time Regression
-
-```{python}
-#| echo: false
-# Create residuals plot for Time regression
-plt.figure(figsize=(12, 8))
-
-# Calculate residuals
-residuals_time = y_time - y_pred_time
-
-# Residuals vs fitted values
-plt.scatter(y_pred_time, residuals_time, alpha=0.7, s=80, color='purple', 
-           edgecolors='black', linewidth=0.5)
-plt.axhline(y=0, color='red', linestyle='--', linewidth=2)
-plt.xlabel('Predicted Anxiety', fontsize=12)
-plt.ylabel('Residuals (Actual - Predicted)', fontsize=12)
-plt.title('Residuals vs Predicted Values for Time Regression\n(Checking for patterns in residuals)', 
-          fontsize=14, fontweight='bold')
-plt.grid(True, alpha=0.3)
-
-# Add horizontal lines for ±1 standard deviation
-residual_std_time = residuals_time.std()
-plt.axhline(y=residual_std_time, color='orange', linestyle=':', alpha=0.7, 
-           label=f'+1 SD ({residual_std_time:.3f})')
-plt.axhline(y=-residual_std_time, color='orange', linestyle=':', alpha=0.7, 
-           label=f'-1 SD ({-residual_std_time:.3f})')
-plt.legend()
-plt.tight_layout()
-plt.show()
-
-# Print residual statistics
-print("=== RESIDUAL ANALYSIS FOR TIME REGRESSION ===")
-print(f"Mean of residuals: {residuals_time.mean():.6f}")
-print(f"Std of residuals: {residuals_time.std():.4f}")
-print(f"Min residual: {residuals_time.min():.4f}")
-print(f"Max residual: {residuals_time.max():.4f}")
-```
-
-### Detailed Commentary on Fit and Issues
-
-```{python}
-#| echo: false
-print("=== DETAILED COMMENTARY ON TIME-ANXIETY RELATIONSHIP ===")
-print()
-print("VISUAL OBSERVATIONS:")
-print("• Data points cluster by Stress levels, showing the confounding effect")
-print("• Regression line has a steep slope (5.34) vs true slope (0.1)")
-print("• The line appears to 'connect' different stress clusters rather than show Time effect")
-print("• High R² (0.563) is misleading - it's capturing Stress effect through Time")
-print()
-print("FIT QUALITY ASSESSMENT:")
-print("• R² = 0.563 suggests moderate fit, but this is misleading")
-print("• RMSE = 3.09 and MAE = 2.56 indicate substantial prediction errors")
-print("• Residuals show clustering patterns, suggesting systematic bias")
-print()
-print("CRITICAL ISSUES:")
-print("• SEVERE OMITTED VARIABLE BIAS: Stress is the primary driver of Anxiety")
-print("• CONFOUNDING: Time and Stress correlation = 0.744 (very high!)")
-print("• The regression line is capturing Stress effect, not Time effect")
-print("• Slope coefficient is 53x too large (5.34 vs 0.1)")
-print("• Intercept is severely biased (-3.68 vs true ~4.6)")
-print()
-print("WHY THE REGRESSION IS MISLEADING:")
-print("• Time appears to have strong effect on Anxiety (slope = 5.34)")
-print("• But this is because higher Time values are associated with higher Stress")
-print("• The regression is attributing Stress's effect to Time")
-print("• This is a classic example of confounding bias")
-print()
-print("COMPARISON WITH STRESSSURVEY REGRESSION:")
-print("• StressSurvey: R² = 0.901, slope = 1.047 (3x true)")
-print("• Time: R² = 0.563, slope = 5.341 (53x true)")
-print("• Time regression has worse bias but lower R²")
-print("• Both suffer from omitted variable bias, but Time is more severely affected")
-print()
-print("RECOMMENDATIONS:")
-print("• Include both Stress and Time in a multiple regression")
-print("• Be extremely cautious interpreting Time coefficient in bivariate model")
-print("• Consider that the true relationship is: Anxiety = Stress + 0.1×Time")
-print("• The steep slope (5.34) is not a causal effect of Time on Anxiety")
-```
+**Conclusion:**
+The scatter plot shows data points clustering by Stress levels, with the regression line appearing to connect these clusters. This visual pattern clearly demonstrates that the regression is capturing the confounding relationship between Time and Stress, not the true causal effect of Time on Anxiety. The steep slope (5.34) is entirely spurious due to the omitted variable problem, making this an extreme example of how omitted variable bias can create completely misleading results.
 
 
-## Question 5: Multiple Regression Analysis
+## Question 5: Run a multiple regression of Anxiety on both StressSurvey and Time. What are the estimated coefficients? How do they compare to the true relationship?
 
 ### Multiple Regression: Anxiety on StressSurvey and Time
 
@@ -513,131 +377,74 @@ print(f"\nEstimated Multiple Regression Equation:")
 print(f"Anxiety = {intercept_multiple:.4f} + {slope_stresssurvey:.4f} × StressSurvey + {slope_time:.4f} × Time")
 ```
 
-### Comparison with True Relationship
+### Answer
 
-```{python}
-#| echo: false
-# True relationship: Anxiety = Stress + 0.1 × Time
-# Since StressSurvey = 3 × Stress, the true relationship in terms of StressSurvey is:
-# Anxiety = (StressSurvey/3) + 0.1 × Time
+**Estimated Coefficients:**
+- **Intercept (β₀)**: 0.5888
+- **StressSurvey coefficient (β₁)**: 1.4269
+- **Time coefficient (β₂)**: -2.7799
+- **R² Score**: 0.9350
 
-print(f"\n=== TRUE RELATIONSHIP ANALYSIS ===")
-print(f"True relationship: Anxiety = Stress + 0.1 × Time")
-print(f"Since StressSurvey = 3 × Stress:")
-print(f"True relationship: Anxiety = (StressSurvey/3) + 0.1 × Time")
-print(f"True StressSurvey coefficient: 1/3 = {1/3:.4f}")
-print(f"True Time coefficient: 0.1000")
-print(f"True intercept: 0.0000 (no constant term in true relationship)")
+**True Relationship:**
+The true relationship in the data is: **Anxiety = Stress + 0.1 × Time**
 
-print(f"\n=== COMPARISON ===")
-print(f"Estimated StressSurvey coefficient: {slope_stresssurvey:.4f}")
-print(f"True StressSurvey coefficient: {1/3:.4f}")
-print(f"Difference: {slope_stresssurvey - (1/3):.4f}")
-print(f"Estimated Time coefficient: {slope_time:.4f}")
-print(f"True Time coefficient: 0.1000")
-print(f"Difference: {slope_time - 0.1:.4f}")
-print(f"Estimated intercept: {intercept_multiple:.4f}")
-print(f"True intercept: 0.0000")
-print(f"Difference: {intercept_multiple:.4f}")
+Since StressSurvey = 3 × Stress, the true relationship in terms of StressSurvey is:
+**Anxiety = (StressSurvey/3) + 0.1 × Time**
 
-# Calculate additional fit statistics for multiple regression
-mse_multiple = mean_squared_error(y_multiple, y_pred_multiple)
-rmse_multiple = np.sqrt(mse_multiple)
-mae_multiple = mean_absolute_error(y_multiple, y_pred_multiple)
+Therefore:
+- **True StressSurvey coefficient**: 1/3 = 0.3333
+- **True Time coefficient**: 0.1000
+- **True intercept**: 0.0000 (no constant term in true relationship)
 
-print(f"\n=== MULTIPLE REGRESSION FIT STATISTICS ===")
-print(f"RMSE: {rmse_multiple:.4f}")
-print(f"MAE: {mae_multiple:.4f}")
+**Comparison to True Relationship:**
 
-# Check correlations between variables
-correlation_stresssurvey_time = observDF['StressSurvey'].corr(observDF['Time'])
-print(f"Correlation between StressSurvey and Time: {correlation_stresssurvey_time:.4f}")
-```
+| Coefficient | Estimated | True | Difference | Bias |
+|-------------|-----------|------|------------|------|
+| **StressSurvey** | 1.4269 | 0.3333 | +1.0936 | **4.3x too large** |
+| **Time** | -2.7799 | 0.1000 | -2.8799 | **Wrong sign & magnitude** |
+| **Intercept** | 0.5888 | 0.0000 | +0.5888 | **Biased** |
 
-### Residuals Analysis for Multiple Regression
+**Critical Issues Identified:**
 
-```{python}
-#| echo: false
-# Calculate residuals for multiple regression
-residuals_multiple = y_multiple - y_pred_multiple
+1. **Severe Multicollinearity Problem**
+   - StressSurvey and Time correlation = 0.882 (extremely high!)
+   - Variables are too highly correlated to be separated in regression
+   - This prevents accurate coefficient estimation
 
-# Create residuals plot
-plt.figure(figsize=(12, 8))
+2. **Wrong Sign for Time Coefficient**
+   - Estimated Time coefficient: -2.78
+   - True Time coefficient: +0.1
+   - **Coefficient has completely wrong sign and magnitude**
 
-# Residuals vs fitted values
-plt.scatter(y_pred_multiple, residuals_multiple, alpha=0.7, s=80, color='darkgreen', 
-           edgecolors='black', linewidth=0.5)
-plt.axhline(y=0, color='red', linestyle='--', linewidth=2)
-plt.xlabel('Predicted Anxiety', fontsize=12)
-plt.ylabel('Residuals (Actual - Predicted)', fontsize=12)
-plt.title('Residuals vs Predicted Values for Multiple Regression\n(StressSurvey + Time)', 
-          fontsize=14, fontweight='bold')
-plt.grid(True, alpha=0.3)
+3. **Still Biased Coefficients**
+   - StressSurvey coefficient is 4.3x too large (1.43 vs 0.33)
+   - Even with both variables included, coefficients are severely biased
+   - High R² (0.935) is misleading because coefficients are meaningless
 
-# Add horizontal lines for ±1 standard deviation
-residual_std_multiple = residuals_multiple.std()
-plt.axhline(y=residual_std_multiple, color='orange', linestyle=':', alpha=0.7, 
-           label=f'+1 SD ({residual_std_multiple:.3f})')
-plt.axhline(y=-residual_std_multiple, color='orange', linestyle=':', alpha=0.7, 
-           label=f'-1 SD ({-residual_std_multiple:.3f})')
-plt.legend()
-plt.tight_layout()
-plt.show()
+**Why Multiple Regression Failed:**
+- **Multicollinearity** prevents separation of StressSurvey and Time effects
+- **High correlation (0.882)** makes it impossible to isolate individual effects
+- **Variables are too similar** to be included together in regression
+- **Classic case** where multiple regression doesn't solve omitted variable bias
 
-# Print residual statistics
-print("=== RESIDUAL ANALYSIS FOR MULTIPLE REGRESSION ===")
-print(f"Mean of residuals: {residuals_multiple.mean():.6f}")
-print(f"Std of residuals: {residuals_multiple.std():.4f}")
-print(f"Min residual: {residuals_multiple.min():.4f}")
-print(f"Max residual: {residuals_multiple.max():.4f}")
-```
+**Comparison with Bivariate Regressions:**
+- **StressSurvey bivariate**: slope = 1.047 (3x true), R² = 0.901
+- **Time bivariate**: slope = 5.341 (53x true), R² = 0.563
+- **Multiple regression**: StressSurvey = 1.43 (4.3x true), Time = -2.78 (wrong sign), R² = 0.935
+- **Multiple regression has worse bias** than bivariate regressions due to multicollinearity
 
-### Detailed Commentary on Multiple Regression
+**Key Insights:**
+- **Multiple regression doesn't always solve omitted variable bias**
+- **Multicollinearity can make multiple regression worse** than bivariate regressions
+- **High correlation between variables** prevents accurate coefficient estimation
+- **R² can be misleading** when coefficients are meaningless due to multicollinearity
 
-```{python}
-#| echo: false
-print("=== DETAILED COMMENTARY ON MULTIPLE REGRESSION ===")
-print()
-print("STRENGTHS:")
-print("• Both StressSurvey and Time coefficients are much closer to true values")
-print("• R² is very high, indicating excellent fit")
-print("• Residuals are well-behaved with no obvious patterns")
-print("• The model successfully controls for both variables")
-print()
-print("COEFFICIENT ACCURACY:")
-print("• StressSurvey coefficient: Very close to true value (1/3)")
-print("• Time coefficient: Very close to true value (0.1)")
-print("• Intercept: Close to true value (0)")
-print("• This demonstrates the power of including all relevant variables")
-print()
-print("COMPARISON WITH BIVARIATE REGRESSIONS:")
-print("• StressSurvey bivariate: slope = 1.047 (3x true), R² = 0.901")
-print("• Time bivariate: slope = 5.341 (53x true), R² = 0.563")
-print("• Multiple regression: both coefficients accurate, R² = 0.999+")
-print("• This shows how omitted variable bias is resolved by including all variables")
-print()
-print("STATISTICAL INTERPRETATION:")
-print("• The multiple regression successfully isolates the true effects")
-print("• StressSurvey coefficient captures the true Stress effect (scaled by 3)")
-print("• Time coefficient captures the true Time effect (0.1)")
-print("• No confounding bias because both variables are controlled for")
-print()
-print("KEY INSIGHTS:")
-print("• Multiple regression eliminates omitted variable bias")
-print("• Both coefficients are now interpretable as causal effects")
-print("• The high R² reflects the true relationship in the data")
-print("• This demonstrates the importance of proper model specification")
-print()
-print("RECOMMENDATIONS:")
-print("• Always include all relevant variables in regression models")
-print("• Be cautious of bivariate regressions when variables are correlated")
-print("• Multiple regression is essential for causal inference")
-print("• The true relationship is: Anxiety = Stress + 0.1×Time")
-``` 
+**Conclusion:**
+This demonstrates that **multiple regression can fail completely** when there's severe multicollinearity between the included variables. The Time coefficient has the wrong sign (-2.78 vs +0.1), and the StressSurvey coefficient is still severely biased (4.3x too large). The high R² is misleading because the coefficients are meaningless due to the multicollinearity problem. This is a classic example of how **correlated variables can prevent multiple regression from working properly**. 
 
 
 
-## Question 6: Multiple Regression Analysis - Stress and Time
+## Question 6: Run a multiple regression of Anxiety on both Stress and Time. What are the estimated coefficients? How do they compare to the true relationship?
 
 ### Multiple Regression: Anxiety on Stress and Time
 
@@ -672,120 +479,188 @@ print(f"Anxiety = {intercept_stress_time:.4f} + {slope_stress:.4f} × Stress + {
 
 ### Comparison with True Relationship
 
-```{python}
-#| echo: false
-# True relationship: Anxiety = Stress + 0.1 × Time
 
-print(f"\n=== TRUE RELATIONSHIP ANALYSIS ===")
-print(f"True relationship: Anxiety = Stress + 0.1 × Time")
-print(f"True Stress coefficient: 1.0000")
-print(f"True Time coefficient: 0.1000")
-print(f"True intercept: 0.0000 (no constant term in true relationship)")
-
-print(f"\n=== COMPARISON ===")
-print(f"Estimated Stress coefficient: {slope_stress:.4f}")
-print(f"True Stress coefficient: 1.0000")
-print(f"Difference: {slope_stress - 1.0:.4f}")
-print(f"Estimated Time coefficient: {slope_time_stress:.4f}")
-print(f"True Time coefficient: 0.1000")
-print(f"Difference: {slope_time_stress - 0.1:.4f}")
-print(f"Estimated intercept: {intercept_stress_time:.4f}")
-print(f"True intercept: 0.0000")
-print(f"Difference: {intercept_stress_time:.4f}")
-
-# Calculate additional fit statistics
-mse_stress_time = mean_squared_error(y_stress_time, y_pred_stress_time)
-rmse_stress_time = np.sqrt(mse_stress_time)
-mae_stress_time = mean_absolute_error(y_stress_time, y_pred_stress_time)
-
-print(f"\n=== STRESS-TIME REGRESSION FIT STATISTICS ===")
-print(f"RMSE: {rmse_stress_time:.4f}")
-print(f"MAE: {mae_stress_time:.4f}")
-
-# Check correlation between Stress and Time
-correlation_stress_time = observDF['Stress'].corr(observDF['Time'])
-print(f"Correlation between Stress and Time: {correlation_stress_time:.4f}")
-```
-
-### Residuals Analysis for Stress-Time Regression
+### Scatter Plot: Stress vs Anxiety
 
 ```{python}
 #| echo: false
-# Calculate residuals for Stress-Time regression
-residuals_stress_time = y_stress_time - y_pred_stress_time
+# Create scatter plot for Stress-Time regression
+plt.figure(figsize=(8, 6))
 
-# Create residuals plot
-plt.figure(figsize=(12, 8))
+# Scatter plot of actual data
+plt.scatter(observDF['Stress'], observDF['Anxiety'], 
+           color='darkblue', alpha=0.8, label='Actual Data', s=80, edgecolors='black', linewidth=0.5)
 
-# Residuals vs fitted values
-plt.scatter(y_pred_stress_time, residuals_stress_time, alpha=0.7, s=80, color='darkblue', 
-           edgecolors='black', linewidth=0.5)
-plt.axhline(y=0, color='red', linestyle='--', linewidth=2)
-plt.xlabel('Predicted Anxiety', fontsize=12)
-plt.ylabel('Residuals (Actual - Predicted)', fontsize=12)
-plt.title('Residuals vs Predicted Values for Stress-Time Regression\n(Anxiety = Stress + 0.1×Time)', 
-          fontsize=14, fontweight='bold')
+# Plot regression line (using Stress as the main variable)
+stress_range = np.linspace(observDF['Stress'].min(), 
+                          observDF['Stress'].max(), 100)
+# For visualization, use mean Time value
+mean_time = observDF['Time'].mean()
+regression_line_stress = intercept_stress_time + slope_stress * stress_range + slope_time_stress * mean_time
+plt.plot(stress_range, regression_line_stress, 
+         color='red', linewidth=3, label=f'Regression Line: y = {intercept_stress_time:.3f} + {slope_stress:.3f}×Stress + {slope_time_stress:.3f}×Time')
+
+# Add R² information
+plt.text(0.05, 0.95, f'R² = {model_stress_time.score(X_stress_time, y_stress_time):.3f}', 
+         transform=plt.gca().transAxes, fontsize=12, 
+         bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.8))
+
+plt.xlabel('Stress', fontsize=12)
+plt.ylabel('Anxiety', fontsize=12)
+plt.title('Multiple Regression: Anxiety on Stress and Time\nScatter Plot (Stress vs Anxiety)', fontsize=14, fontweight='bold')
+plt.legend(fontsize=11)
 plt.grid(True, alpha=0.3)
-
-# Add horizontal lines for ±1 standard deviation
-residual_std_stress_time = residuals_stress_time.std()
-plt.axhline(y=residual_std_stress_time, color='orange', linestyle=':', alpha=0.7, 
-           label=f'+1 SD ({residual_std_stress_time:.3f})')
-plt.axhline(y=-residual_std_stress_time, color='orange', linestyle=':', alpha=0.7, 
-           label=f'-1 SD ({-residual_std_stress_time:.3f})')
-plt.legend()
 plt.tight_layout()
 plt.show()
-
-# Print residual statistics
-print("=== RESIDUAL ANALYSIS FOR STRESS-TIME REGRESSION ===")
-print(f"Mean of residuals: {residuals_stress_time.mean():.6f}")
-print(f"Std of residuals: {residuals_stress_time.std():.4f}")
-print(f"Min residual: {residuals_stress_time.min():.4f}")
-print(f"Max residual: {residuals_stress_time.max():.4f}")
 ```
 
-### Detailed Commentary on Stress-Time Regression
+### Answer
+
+**Estimated Coefficients:**
+- **Intercept (β₀)**: 0.0000
+- **Stress coefficient (β₁)**: 1.0000
+- **Time coefficient (β₂)**: 0.1000
+- **R² Score**: 1.0000 (perfect fit!)
+
+**True Relationship:**
+The true relationship in the data is: **Anxiety = Stress + 0.1 × Time**
+
+Therefore:
+- **True Stress coefficient**: 1.0000
+- **True Time coefficient**: 0.1000
+- **True intercept**: 0.0000 (no constant term in true relationship)
+
+**Comparison to True Relationship:**
+
+| Coefficient | Estimated | True | Difference | Accuracy |
+|-------------|-----------|------|------------|----------|
+| **Stress** | 1.0000 | 1.0000 | 0.0000 | **Perfect match** |
+| **Time** | 0.1000 | 0.1000 | 0.0000 | **Perfect match** |
+| **Intercept** | 0.0000 | 0.0000 | 0.0000 | **Perfect match** |
+
+**Outstanding Results:**
+
+1. **Perfect Coefficient Accuracy**
+   - All coefficients match the true values exactly
+   - No bias whatsoever in any coefficient
+   - This demonstrates the power of using the correct variables
+
+2. **Perfect Model Fit**
+   - R² = 1.0000 (perfect fit with no error)
+   - RMSE = 0.0000 (no prediction errors)
+   - MAE = 0.0000 (no prediction errors)
+   - Residuals = 0.0000 (perfect predictions)
+
+3. **No Statistical Issues**
+   - No omitted variable bias (both variables included)
+   - No multicollinearity problems (manageable correlation = 0.744)
+   - No confounding bias (both variables properly controlled)
+   - Perfect residual behavior with no patterns
+
+**Comparison with All Previous Regressions:**
+
+| Regression Type | StressSurvey | Time | R² | Issues |
+|----------------|---------------|------|----|---------| 
+| **StressSurvey bivariate** | 1.047 (3x true) | - | 0.901 | Omitted variable bias |
+| **Time bivariate** | - | 5.341 (53x true) | 0.563 | Severe omitted variable bias |
+| **StressSurvey+Time multiple** | 1.427 (4.3x true) | -2.78 (wrong sign) | 0.935 | Multicollinearity |
+| **Stress+Time multiple** | 1.000 (perfect) | 0.100 (perfect) | 1.000 | **No issues** |
+
+**Key Insights:**
+- **Using original variables eliminates all bias**
+- **Multiple regression works perfectly** when variables are properly specified
+- **No multicollinearity issues** with manageable correlation (0.744)
+- **Perfect coefficient recovery** of the true relationship
+- **High R² reflects true relationship** rather than confounding
+
+**Critical Success Factors:**
+1. **Used actual variables** from the true relationship (Stress, Time)
+2. **Avoided transformed variables** (StressSurvey) that introduce bias
+3. **Included both relevant variables** to eliminate omitted variable bias
+4. **Variables were not too highly correlated** to cause multicollinearity
+
+**Conclusion:**
+This demonstrates that **multiple regression can work perfectly** when we use the actual variables from the true relationship. All coefficients are exactly correct (1.0 for Stress, 0.1 for Time, 0 for intercept), and the model achieves perfect fit (R² = 1.0). This shows the critical importance of **proper variable selection** and using **original variables rather than transformations** when possible. The true relationship **Anxiety = Stress + 0.1×Time** is perfectly recoverable with the right variables.
+
+## Question 7: Model Comparison
+
+### Model Comparison Analysis
 
 ```{python}
 #| echo: false
-print("=== DETAILED COMMENTARY ON STRESS-TIME REGRESSION ===")
-print()
-print("EXCELLENT RESULTS:")
-print("• Both Stress and Time coefficients are very close to true values")
-print("• R² is extremely high, indicating perfect fit")
-print("• Residuals are minimal with no systematic patterns")
-print("• The model successfully captures the true relationship")
-print()
-print("COEFFICIENT ACCURACY:")
-print("• Stress coefficient: Very close to true value (1.0)")
-print("• Time coefficient: Very close to true value (0.1)")
-print("• Intercept: Very close to true value (0)")
-print("• This demonstrates the power of using the correct variables")
-print()
-print("COMPARISON WITH PREVIOUS REGRESSIONS:")
-print("• StressSurvey bivariate: slope = 1.047 (3x true), R² = 0.901")
-print("• Time bivariate: slope = 5.341 (53x true), R² = 0.563")
-print("• StressSurvey+Time multiple: both biased, R² = 0.935")
-print("• Stress+Time multiple: both accurate, R² = 0.999+")
-print("• This shows the importance of using the correct variables")
-print()
-print("STATISTICAL INTERPRETATION:")
-print("• The regression successfully isolates the true effects")
-print("• Stress coefficient captures the true Stress effect (1.0)")
-print("• Time coefficient captures the true Time effect (0.1)")
-print("• No bias because we're using the actual variables from the true relationship")
-print()
-print("KEY INSIGHTS:")
-print("• Using the correct variables eliminates all bias")
-print("• Both coefficients are now interpretable as true causal effects")
-print("• The high R² reflects the true relationship in the data")
-print("• This demonstrates the importance of proper variable selection")
-print()
-print("RECOMMENDATIONS:")
-print("• Always use the actual variables from the true relationship when possible")
-print("• Avoid transformed variables (like StressSurvey) when the original exists")
-print("• Multiple regression works perfectly when variables are properly specified")
-print("• The true relationship is: Anxiety = Stress + 0.1×Time")
+# Compare the two multiple regression models
+import numpy as np
+
+# Model 1: StressSurvey + Time
+print("=== MODEL 1: StressSurvey + Time ===")
+print(f"R²: {model_multiple.score(X_multiple, y_multiple):.4f}")
+print(f"StressSurvey coefficient: {slope_stresssurvey:.4f}")
+print(f"Time coefficient: {slope_time:.4f}")
+print(f"Intercept: {intercept_multiple:.4f}")
+
+# Model 2: Stress + Time  
+print("\n=== MODEL 2: Stress + Time ===")
+print(f"R²: {model_stress_time.score(X_stress_time, y_stress_time):.4f}")
+print(f"Stress coefficient: {slope_stress:.4f}")
+print(f"Time coefficient: {slope_time_stress:.4f}")
+print(f"Intercept: {intercept_stress_time:.4f}")
+
+# Calculate correlation between StressSurvey and Time
+correlation_stresssurvey_time = observDF['StressSurvey'].corr(observDF['Time'])
+print(f"\n=== CORRELATION ANALYSIS ===")
+print(f"StressSurvey-Time correlation: {correlation_stresssurvey_time:.4f}")
+
+# Calculate correlation between Stress and Time
+correlation_stress_time = observDF['Stress'].corr(observDF['Time'])
+print(f"Stress-Time correlation: {correlation_stress_time:.4f}")
+
+# True relationship coefficients
+print(f"\n=== TRUE RELATIONSHIP ===")
+print(f"True Stress coefficient: 1.0000")
+print(f"True Time coefficient: 0.1000")
+print(f"True StressSurvey coefficient: 0.3333 (1/3)")
+print(f"True intercept: 0.0000")
 ```
+
+### Answer
+
+**R-squared Comparison:**
+
+| Model | R² | Interpretation |
+|-------|----|----|
+| **StressSurvey + Time** | 0.935 | High fit, but misleading due to multicollinearity |
+| **Stress + Time** | 1.000 | Perfect fit, reflects true relationship |
+
+**Coefficient Comparison:**
+
+| Variable | Model 1 (StressSurvey+Time) | Model 2 (Stress+Time) | True Value | Model 1 Bias | Model 2 Bias |
+|----------|---------------------------|---------------------|------------|--------------|--------------|
+| **Stress/StressSurvey** | 1.4269 | 1.0000 | 1.0000/0.3333 | 4.3x too large | Perfect |
+| **Time** | -2.7799 | 0.1000 | 0.1000 | Wrong sign & magnitude | Perfect |
+| **Intercept** | 0.5888 | 0.0000 | 0.0000 | Biased | Perfect |
+
+**Statistical Significance Analysis:**
+
+**Model 1 (StressSurvey + Time):**
+- **High R² (0.935)** but coefficients are **statistically meaningless**
+- **Time coefficient has wrong sign** (-2.78 vs +0.1)
+- **Multicollinearity problem** (correlation = 0.882) prevents accurate estimation
+
+**Model 2 (Stress + Time):**
+- **Perfect R² (1.000)** with **statistically perfect coefficients**
+- **All coefficients exactly match true values**
+- **Manageable correlation (0.744)** allows proper separation
+
+**Real-World Implications:**
+
+1. **Variable Selection is Critical** - Using original variables (Stress, Time) leads to perfect results, while transformed variables (StressSurvey) introduce severe bias
+
+2. **Multicollinearity Can Destroy Models** - High correlation (0.882) between StressSurvey and Time prevents separation, while lower correlation (0.744) between Stress and Time allows proper estimation
+
+3. **R² Can Be Misleading** - Model 1 has high R² (0.935) but meaningless coefficients, while Model 2 has perfect R² (1.000) with perfect coefficients
+
+4. **Multiple Regression Success is Not Guaranteed** - Including both variables doesn't always solve omitted variable bias; proper variable selection is more important than model complexity
+
+**Conclusion:**
+Model 1 shows how high R² can be misleading when coefficients are biased due to multicollinearity, while Model 2 shows how proper variable selection leads to perfect results. **Variable choice and multicollinearity assessment are more important than model complexity** for reliable statistical inference.
 

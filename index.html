@@ -66,10 +66,7 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="garbage-can-regression-challenge" class="level1">
 <h1>Garbage Can Regression Challenge</h1>
-<p><strong>Choose R or Python and delete the other code chunk.</strong></p>
-<section id="python-code" class="level2">
-<h2 class="anchored" data-anchor-id="python-code">Python Code</h2>
-<div id="cefe7157" class="cell" data-execution_count="1">
+<div id="af80a476" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-stdout">
 <pre><code>    Stress  StressSurvey  Time  Anxiety
 0        0             0   0.0     0.00
@@ -89,12 +86,14 @@ ul.task-list li input[type="checkbox"] {
 14      12            12   2.2    12.22</code></pre>
 </div>
 </div>
-</section>
 <section id="your-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="your-analysis">Your Analysis</h2>
 <section id="bivariate-regression-anxiety-on-stresssurvey" class="level3">
 <h3 class="anchored" data-anchor-id="bivariate-regression-anxiety-on-stresssurvey">Bivariate Regression: Anxiety on StressSurvey</h3>
-<div id="8f15b7dd" class="cell" data-execution_count="2">
+</section>
+<section id="question-1-run-a-bivariate-regression-of-anxiety-on-stresssurvey.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship" class="level3">
+<h3 class="anchored" data-anchor-id="question-1-run-a-bivariate-regression-of-anxiety-on-stresssurvey.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship">Question 1: Run a bivariate regression of Anxiety on StressSurvey. What are the estimated coefficients? How do they compare to the true relationship?</h3>
+<div id="80f874de" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-stdout">
 <pre><code>Regression Results:
 Intercept (β₀): -1.5240
@@ -106,114 +105,134 @@ Anxiety = -1.5240 + 1.0470 × StressSurvey</code></pre>
 </div>
 </div>
 </section>
-<section id="comparison-with-true-relationship" class="level3">
-<h3 class="anchored" data-anchor-id="comparison-with-true-relationship">Comparison with True Relationship</h3>
-<div id="2961a78f" class="cell" data-execution_count="3">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-True Relationship Analysis:
-True relationship: Anxiety = Stress + 0.1 × Time
-Since StressSurvey = 3 × Stress, true relationship in terms of StressSurvey is:
-Anxiety = (StressSurvey/3) + 0.1 × Time
-True slope coefficient for StressSurvey: 1/3 = 0.3333
-True intercept: varies with Time, but base intercept ≈ 0.1 × mean(Time)
-Approximate true intercept: 0.1 × 1.58 = 0.1580
-
-Comparison:
-Estimated slope: 1.0470
-True slope: 0.3333
-Difference: 0.7137
-Estimated intercept: -1.5240
-Approximate true intercept: 0.1580
-Difference: -1.6820</code></pre>
-</div>
-</div>
+<section id="answer" class="level3">
+<h3 class="anchored" data-anchor-id="answer">Answer</h3>
+<p><strong>Estimated Coefficients:</strong> - <strong>Intercept (β₀)</strong>: -1.5240 - <strong>Slope (β₁)</strong>: 1.0470 - <strong>R² Score</strong>: 0.9011</p>
+<p><strong>True Relationship:</strong> The true relationship in the data is: <strong>Anxiety = Stress + 0.1 × Time</strong></p>
+<p>Since StressSurvey = 3 × Stress, the true relationship in terms of StressSurvey is: <strong>Anxiety = (StressSurvey/3) + 0.1 × Time</strong></p>
+<p>Therefore: - <strong>True StressSurvey coefficient</strong>: 1/3 = 0.3333 - <strong>True Time coefficient</strong>: 0.1000 - <strong>True intercept</strong>: 0.0000 (no constant term in true relationship)</p>
+<p><strong>Comparison to True Relationship:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient</th>
+<th>Estimated</th>
+<th>True</th>
+<th>Difference</th>
+<th>Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>StressSurvey</strong></td>
+<td>1.0470</td>
+<td>0.3333</td>
+<td>+0.7137</td>
+<td><strong>3.1x too large</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Intercept</strong></td>
+<td>-1.5240</td>
+<td>~0.158</td>
+<td>-1.6820</td>
+<td><strong>Severely biased</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Findings:</strong> The regression shows significant <strong>omitted variable bias</strong>. The estimated slope coefficient (1.047) is <strong>3.1 times larger</strong> than the true slope (0.333) because:</p>
+<ol type="1">
+<li><strong>Time is omitted</strong> from the regression, but it’s part of the true relationship</li>
+<li><strong>StressSurvey and Time are correlated</strong> in this dataset (correlation = 0.882)</li>
+<li>The regression is <strong>confounding</strong> the effect of StressSurvey with the effect of Time</li>
+</ol>
+<p>This is a classic example of how <strong>omitted variable bias</strong> can lead to severely inflated coefficient estimates, even when the model appears to fit well (R² = 0.901).</p>
 </section>
+</section>
+<section id="question-2-create-a-scatter-plot-with-the-regression-line-showing-the-relationship-between-stresssurvey-and-anxiety.-comment-on-the-fit-and-any-potential-issues." class="level2">
+<h2 class="anchored" data-anchor-id="question-2-create-a-scatter-plot-with-the-regression-line-showing-the-relationship-between-stresssurvey-and-anxiety.-comment-on-the-fit-and-any-potential-issues.">Question 2: Create a scatter plot with the regression line showing the relationship between StressSurvey and Anxiety. Comment on the fit and any potential issues.</h2>
 <section id="scatter-plot-with-regression-line" class="level3">
 <h3 class="anchored" data-anchor-id="scatter-plot-with-regression-line">Scatter Plot with Regression Line</h3>
-<div id="e5844446" class="cell" data-execution_count="4">
+<div id="6ce541aa" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-5-output-1.png" width="1143" height="756" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-4-output-1.png" width="759" height="564" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="analysis-of-the-fit-and-potential-issues" class="level3">
-<h3 class="anchored" data-anchor-id="analysis-of-the-fit-and-potential-issues">Analysis of the Fit and Potential Issues</h3>
-<div id="7221c787" class="cell" data-execution_count="5">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== REGRESSION FIT ANALYSIS ===
-R² Score: 0.9011
-RMSE: 1.4716
-MAE: 1.2300
-Mean of Anxiety: 4.7580
-Std of Anxiety: 4.8437
-
-=== RESIDUAL ANALYSIS ===
-Mean of residuals: 0.000000
-Std of residuals: 1.5233
-Min residual: -2.5580
-Max residual: 1.6240
-
-=== POTENTIAL ISSUES ===
-Correlation between StressSurvey and Time: 0.8819
-This high correlation suggests omitted variable bias!</code></pre>
-</div>
-</div>
-</section>
-<section id="residuals-plot" class="level3">
-<h3 class="anchored" data-anchor-id="residuals-plot">Residuals Plot</h3>
-<div id="0dd28c79" class="cell" data-execution_count="6">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-7-output-1.png" width="951" height="564" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="commentary-on-fit-and-issues" class="level3">
-<h3 class="anchored" data-anchor-id="commentary-on-fit-and-issues">Commentary on Fit and Issues</h3>
-<div id="e57de1b3" class="cell" data-execution_count="7">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== COMMENTARY ON THE REGRESSION FIT ===
-
-STRENGTHS:
-• High R² (0.901) indicates the model explains 90% of variance in Anxiety
-• Visually, the regression line appears to fit the data points well
-• No obvious outliers in the scatter plot
-
-POTENTIAL ISSUES:
-• OMITTED VARIABLE BIAS: Time is excluded but affects Anxiety
-• CONFOUNDING: StressSurvey and Time are highly correlated
-• The estimated slope (1.047) is 3x larger than true slope (0.333)
-• The intercept is severely biased (-1.524 vs true ~0.158)
-
-STATISTICAL CONCERNS:
-• High correlation between StressSurvey and Time suggests multicollinearity
-• The model may be overfitting to the confounding relationship
-• Residuals show some clustering, suggesting systematic patterns
-
-RECOMMENDATIONS:
-• Include Time as a control variable in the regression
-• Consider the true relationship: Anxiety = Stress + 0.1×Time
-• Be cautious interpreting the coefficient as causal effect</code></pre>
-</div>
-</div>
-</section>
-<section id="question-2-there-is-a-high-r2-which-indicates-a-strong-linear-relationship-and-there-are-no-obvious-outliers-in-the-scatter-plot.-some-issues-include-time-being-excluded-but-affects-anxiety.-moreover-the-model-seems-to-be-overfitting-to-the-confoundig-relationship.-i-would-recommmend-to-be-cautious-when-interpreting-the-coefficient-as-a-causal-effect." class="level3">
-<h3 class="anchored" data-anchor-id="question-2-there-is-a-high-r2-which-indicates-a-strong-linear-relationship-and-there-are-no-obvious-outliers-in-the-scatter-plot.-some-issues-include-time-being-excluded-but-affects-anxiety.-moreover-the-model-seems-to-be-overfitting-to-the-confoundig-relationship.-i-would-recommmend-to-be-cautious-when-interpreting-the-coefficient-as-a-causal-effect.">Question 2: There is a high R^2 which indicates a strong linear relationship and there are no obvious outliers in the scatter plot. Some issues include time being excluded but affects Anxiety. Moreover, the model seems to be overfitting to the confoundig relationship. I would recommmend to be cautious when interpreting the coefficient as a causal effect.</h3>
+<section id="answer-1" class="level3">
+<h3 class="anchored" data-anchor-id="answer-1">Answer</h3>
+<p><strong>Fit Assessment:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>R² Score</strong></td>
+<td>0.901</td>
+<td>High explanatory power (90% of variance explained)</td>
+</tr>
+<tr class="even">
+<td><strong>RMSE</strong></td>
+<td>1.47</td>
+<td>Moderate prediction errors</td>
+</tr>
+<tr class="odd">
+<td><strong>MAE</strong></td>
+<td>1.23</td>
+<td>Mean absolute error of 1.23 units</td>
+</tr>
+<tr class="even">
+<td><strong>Residuals Mean</strong></td>
+<td>~0.000</td>
+<td>No systematic bias in residuals</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Visual Assessment:</strong> - <strong>Strong linear relationship</strong> is clearly visible in the scatter plot - <strong>Regression line fits well</strong> through the data points - <strong>No obvious outliers</strong> in the data - <strong>Good spread</strong> of data points around the regression line</p>
+<p><strong>Critical Issues Identified:</strong></p>
+<ol type="1">
+<li><strong>Severe Omitted Variable Bias</strong>
+<ul>
+<li>Time variable is excluded but affects Anxiety</li>
+<li>Estimated slope (1.047) is <strong>3.1x larger</strong> than true slope (0.333)</li>
+<li>Intercept is severely biased (-1.524 vs true ~0.158)</li>
+</ul></li>
+<li><strong>Confounding Problem</strong>
+<ul>
+<li>StressSurvey and Time are highly correlated (r = 0.882)</li>
+<li>Regression captures Time’s effect through StressSurvey</li>
+<li>This creates a <strong>spurious relationship</strong></li>
+</ul></li>
+<li><strong>Misleading High R²</strong>
+<ul>
+<li>R² = 0.901 suggests excellent fit</li>
+<li>But this is <strong>misleading</strong> because it’s capturing confounding effects</li>
+<li>High R² masks the severe coefficient bias</li>
+</ul></li>
+</ol>
+<p><strong>Statistical Concerns:</strong> - <strong>Residual clustering</strong> suggests systematic patterns - <strong>Model overfitting</strong> to the confounding relationship - <strong>Coefficients are not interpretable</strong> as causal effects</p>
+<p><strong>Recommendations:</strong> - <strong>Include Time as a control variable</strong> in the regression - <strong>Be extremely cautious</strong> interpreting the StressSurvey coefficient - <strong>Consider the true relationship</strong>: Anxiety = Stress + 0.1×Time - <strong>Avoid causal interpretation</strong> of the coefficient</p>
+<p><strong>Conclusion:</strong> While the scatter plot shows a strong visual relationship and high R², this is a classic example of <strong>omitted variable bias</strong>. The regression line appears to fit well, but the coefficients are severely biased due to the confounding effect of the omitted Time variable. The high R² is misleading and masks the fundamental statistical problems with this model specification.</p>
 </section>
 </section>
-<section id="question-3-bivariate-regression-of-anxiety-on-time" class="level2">
-<h2 class="anchored" data-anchor-id="question-3-bivariate-regression-of-anxiety-on-time">Question 3: Bivariate Regression of Anxiety on Time</h2>
+<section id="question-3-run-a-bivariate-regression-of-anxiety-on-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="question-3-run-a-bivariate-regression-of-anxiety-on-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship">Question 3: Run a bivariate regression of Anxiety on Time. What are the estimated coefficients? How do they compare to the true relationship?</h2>
 <section id="regression-analysis-anxiety-on-time" class="level3">
 <h3 class="anchored" data-anchor-id="regression-analysis-anxiety-on-time">Regression Analysis: Anxiety on Time</h3>
-<div id="d3bbe464" class="cell" data-execution_count="8">
+<div id="d1801be6" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-stdout">
 <pre><code>=== TIME REGRESSION RESULTS ===
 Intercept (β₀): -3.6801
@@ -225,159 +244,137 @@ Anxiety = -3.6801 + 5.3406 × Time</code></pre>
 </div>
 </div>
 </section>
-<section id="comparison-with-true-relationship-1" class="level3">
-<h3 class="anchored" data-anchor-id="comparison-with-true-relationship-1">Comparison with True Relationship</h3>
-<div id="f13538fb" class="cell" data-execution_count="9">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-=== TRUE RELATIONSHIP ANALYSIS ===
-True relationship: Anxiety = Stress + 0.1 × Time
-True coefficient for Time: 0.1000
-True intercept: varies with Stress, but base intercept ≈ mean(Stress)
-Approximate true intercept: mean(Stress) = 4.60
-
-=== COMPARISON ===
-Estimated slope: 5.3406
-True slope: 0.1000
-Difference: 5.2406
-Estimated intercept: -3.6801
-Approximate true intercept: 4.6000
-Difference: -8.2801
-
-=== TIME REGRESSION FIT STATISTICS ===
-RMSE: 3.0933
-MAE: 2.5607
-Correlation between Time and Stress: 0.7441</code></pre>
-</div>
-</div>
+<section id="answer-2" class="level3">
+<h3 class="anchored" data-anchor-id="answer-2">Answer</h3>
+<p><strong>Estimated Coefficients:</strong> - <strong>Intercept (β₀)</strong>: -3.6801 - <strong>Slope (β₁)</strong>: 5.3406 - <strong>R² Score</strong>: 0.5630</p>
+<p><strong>True Relationship:</strong> The true relationship in the data is: <strong>Anxiety = Stress + 0.1 × Time</strong></p>
+<p>Therefore: - <strong>True Time coefficient</strong>: 0.1000 - <strong>True intercept</strong>: varies with Stress, but base intercept ≈ mean(Stress) = 4.60</p>
+<p><strong>Comparison to True Relationship:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient</th>
+<th>Estimated</th>
+<th>True</th>
+<th>Difference</th>
+<th>Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Time</strong></td>
+<td>5.3406</td>
+<td>0.1000</td>
+<td>+5.2406</td>
+<td><strong>53.4x too large</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Intercept</strong></td>
+<td>-3.6801</td>
+<td>~4.60</td>
+<td>-8.2801</td>
+<td><strong>Severely biased</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Findings:</strong> The regression shows <strong>dramatically worse omitted variable bias</strong> than the StressSurvey regression. The estimated Time coefficient (5.341) is <strong>53.4 times larger</strong> than the true coefficient (0.1) because:</p>
+<ol type="1">
+<li><strong>Stress is omitted</strong> from the regression, but it’s the primary driver of Anxiety</li>
+<li><strong>Time and Stress are highly correlated</strong> (r = 0.744)</li>
+<li>The regression is <strong>confounding</strong> the effect of Time with the effect of Stress</li>
+<li><strong>The intercept has the wrong sign</strong> (-3.68 vs true ~4.6)</li>
+</ol>
+<p><strong>Critical Issues:</strong> - <strong>Slope coefficient is 53x too large</strong> (5.34 vs 0.1) - <strong>Intercept is severely biased</strong> and has wrong sign - <strong>Lower R² (0.563)</strong> compared to StressSurvey regression (0.901) - <strong>Time appears to have a massive effect</strong> on Anxiety, but this is spurious</p>
+<p><strong>Comparison with StressSurvey Regression:</strong> - <strong>StressSurvey</strong>: slope = 1.047 (3x true), R² = 0.901 - <strong>Time</strong>: slope = 5.341 (53x true), R² = 0.563 - <strong>Time regression has much worse bias</strong> but lower R² - This demonstrates that <strong>omitted variable bias can be much more severe</strong> when the omitted variable (Stress) has a stronger relationship with the outcome than the included variable (Time)</p>
+<p><strong>Conclusion:</strong> This is an extreme example of omitted variable bias. The Time coefficient is <strong>53 times too large</strong> because the regression is capturing the confounding effect of the omitted Stress variable through Time. The model appears to show Time has a massive effect on Anxiety, but this is entirely spurious due to the omitted variable problem.</p>
 </section>
-<section id="scatter-plot-anxiety-on-time" class="level3">
-<h3 class="anchored" data-anchor-id="scatter-plot-anxiety-on-time">Scatter Plot: Anxiety on Time</h3>
-<div id="6e935042" class="cell" data-execution_count="10">
+</section>
+<section id="question-4-create-a-scatter-plot-with-the-regression-line-showing-the-relationship-between-time-and-anxiety.-comment-on-the-fit-and-any-potential-issues." class="level2">
+<h2 class="anchored" data-anchor-id="question-4-create-a-scatter-plot-with-the-regression-line-showing-the-relationship-between-time-and-anxiety.-comment-on-the-fit-and-any-potential-issues.">Question 4: Create a scatter plot with the regression line showing the relationship between Time and Anxiety. Comment on the fit and any potential issues.</h2>
+<section id="scatter-plot-with-regression-line-1" class="level3">
+<h3 class="anchored" data-anchor-id="scatter-plot-with-regression-line-1">Scatter Plot with Regression Line</h3>
+<div id="5922f163" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-11-output-1.png" width="1143" height="756" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-6-output-1.png" width="759" height="564" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="commentary-on-time-regression" class="level3">
-<h3 class="anchored" data-anchor-id="commentary-on-time-regression">Commentary on Time Regression</h3>
-<div id="1bbd37f4" class="cell" data-execution_count="11">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== COMMENTARY ON TIME REGRESSION ===
-
-STRENGTHS:
-• The slope coefficient is very close to the true value (0.1)
-• R² is reasonable, indicating Time explains some variance in Anxiety
-• The relationship appears linear
-
-POTENTIAL ISSUES:
-• OMITTED VARIABLE BIAS: Stress is excluded but affects Anxiety
-• The intercept is biased because Stress is omitted
-• High correlation between Time and Stress suggests confounding
-
-STATISTICAL INTERPRETATION:
-• The Time coefficient is much more accurate than StressSurvey coefficient
-• This suggests Time has a more direct relationship with Anxiety
-• However, the model is still missing the Stress component
-
-COMPARISON WITH STRESSSURVEY REGRESSION:
-• Time regression has lower R² but more accurate coefficients
-• StressSurvey regression had higher R² but severely biased coefficients
-• This illustrates the trade-off between fit and bias</code></pre>
-</div>
-</div>
-</section>
-<section id="overall-the-estimated-coefficients-include-intercept--3.6801-slope-5.3406-and-r2-score-0.5630.-the-difference-between-estimated-and-true-slope-is-5.2406-so-the-estimated-slope-is-53-times-larger-than-true-slope.-the-intercept-difference-is--8.2801-so-the-estimated-intercept-is-severly-biased.-this-shows-that-omitted-variable-bias-can-be-much-more-siginificant-when-the-omitted-variable-stress-has-a-stronger-relationship-with-the-outcome-anxiety-than-the-included-variable-time." class="level3">
-<h3 class="anchored" data-anchor-id="overall-the-estimated-coefficients-include-intercept--3.6801-slope-5.3406-and-r2-score-0.5630.-the-difference-between-estimated-and-true-slope-is-5.2406-so-the-estimated-slope-is-53-times-larger-than-true-slope.-the-intercept-difference-is--8.2801-so-the-estimated-intercept-is-severly-biased.-this-shows-that-omitted-variable-bias-can-be-much-more-siginificant-when-the-omitted-variable-stress-has-a-stronger-relationship-with-the-outcome-anxiety-than-the-included-variable-time.">Overall, the estimated coefficients include intercept: -3.6801, slope= 5.3406, and R^2 score: 0.5630. The difference between estimated and true slope is +5.2406 so the estimated slope is 53 times larger than true slope. The intercept difference is -8.2801 so the estimated intercept is severly biased. This shows that omitted variable bias can be much more siginificant when the omitted variable, Stress, has a stronger relationship with the outcome Anxiety than the included variable (Time).</h3>
-</section>
-</section>
-<section id="question-4-visualization-of-bivariate-relationship---time-and-anxiety" class="level2">
-<h2 class="anchored" data-anchor-id="question-4-visualization-of-bivariate-relationship---time-and-anxiety">Question 4: Visualization of Bivariate Relationship - Time and Anxiety</h2>
-<section id="enhanced-scatter-plot-with-regression-line" class="level3">
-<h3 class="anchored" data-anchor-id="enhanced-scatter-plot-with-regression-line">Enhanced Scatter Plot with Regression Line</h3>
-<div id="134b8dd4" class="cell" data-execution_count="12">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-13-output-1.png" width="1333" height="950" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="residuals-analysis-for-time-regression" class="level3">
-<h3 class="anchored" data-anchor-id="residuals-analysis-for-time-regression">Residuals Analysis for Time Regression</h3>
-<div id="002ec775" class="cell" data-execution_count="13">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-14-output-1.png" width="1143" height="756" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>=== RESIDUAL ANALYSIS FOR TIME REGRESSION ===
-Mean of residuals: -0.000000
-Std of residuals: 3.2018
-Min residual: -4.8010
-Max residual: 4.1508</code></pre>
-</div>
-</div>
-</section>
-<section id="detailed-commentary-on-fit-and-issues" class="level3">
-<h3 class="anchored" data-anchor-id="detailed-commentary-on-fit-and-issues">Detailed Commentary on Fit and Issues</h3>
-<div id="5cf72655" class="cell" data-execution_count="14">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== DETAILED COMMENTARY ON TIME-ANXIETY RELATIONSHIP ===
-
-VISUAL OBSERVATIONS:
-• Data points cluster by Stress levels, showing the confounding effect
-• Regression line has a steep slope (5.34) vs true slope (0.1)
-• The line appears to 'connect' different stress clusters rather than show Time effect
-• High R² (0.563) is misleading - it's capturing Stress effect through Time
-
-FIT QUALITY ASSESSMENT:
-• R² = 0.563 suggests moderate fit, but this is misleading
-• RMSE = 3.09 and MAE = 2.56 indicate substantial prediction errors
-• Residuals show clustering patterns, suggesting systematic bias
-
-CRITICAL ISSUES:
-• SEVERE OMITTED VARIABLE BIAS: Stress is the primary driver of Anxiety
-• CONFOUNDING: Time and Stress correlation = 0.744 (very high!)
-• The regression line is capturing Stress effect, not Time effect
-• Slope coefficient is 53x too large (5.34 vs 0.1)
-• Intercept is severely biased (-3.68 vs true ~4.6)
-
-WHY THE REGRESSION IS MISLEADING:
-• Time appears to have strong effect on Anxiety (slope = 5.34)
-• But this is because higher Time values are associated with higher Stress
-• The regression is attributing Stress's effect to Time
-• This is a classic example of confounding bias
-
-COMPARISON WITH STRESSSURVEY REGRESSION:
-• StressSurvey: R² = 0.901, slope = 1.047 (3x true)
-• Time: R² = 0.563, slope = 5.341 (53x true)
-• Time regression has worse bias but lower R²
-• Both suffer from omitted variable bias, but Time is more severely affected
-
-RECOMMENDATIONS:
-• Include both Stress and Time in a multiple regression
-• Be extremely cautious interpreting Time coefficient in bivariate model
-• Consider that the true relationship is: Anxiety = Stress + 0.1×Time
-• The steep slope (5.34) is not a causal effect of Time on Anxiety</code></pre>
-</div>
-</div>
+<section id="answer-3" class="level3">
+<h3 class="anchored" data-anchor-id="answer-3">Answer</h3>
+<p><strong>Fit Assessment:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th>Value</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>R² Score</strong></td>
+<td>0.563</td>
+<td>Moderate explanatory power (56% of variance explained)</td>
+</tr>
+<tr class="even">
+<td><strong>RMSE</strong></td>
+<td>3.09</td>
+<td>Substantial prediction errors</td>
+</tr>
+<tr class="odd">
+<td><strong>MAE</strong></td>
+<td>2.56</td>
+<td>Mean absolute error of 2.56 units</td>
+</tr>
+<tr class="even">
+<td><strong>Residuals Mean</strong></td>
+<td>~0.000</td>
+<td>No systematic bias in residuals</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Visual Assessment:</strong> - <strong>Data points cluster by Stress levels</strong>, clearly showing the confounding effect - <strong>Regression line has extremely steep slope</strong> (5.34) vs true slope (0.1) - <strong>Line appears to connect different stress clusters</strong> rather than show Time effect - <strong>No obvious outliers</strong> but clear clustering patterns</p>
+<p><strong>Critical Issues Identified:</strong></p>
+<ol type="1">
+<li><strong>Extreme Omitted Variable Bias</strong>
+<ul>
+<li>Stress is the primary driver of Anxiety but is excluded</li>
+<li>Estimated slope (5.341) is <strong>53.4x larger</strong> than true slope (0.1)</li>
+<li>Intercept is severely biased (-3.68 vs true ~4.6)</li>
+</ul></li>
+<li><strong>Severe Confounding Problem</strong>
+<ul>
+<li>Time and Stress correlation = 0.744 (very high!)</li>
+<li>Regression captures Stress effect through Time</li>
+<li>This creates a <strong>completely spurious relationship</strong></li>
+</ul></li>
+<li><strong>Misleading Moderate R²</strong>
+<ul>
+<li>R² = 0.563 suggests moderate fit</li>
+<li>But this is <strong>misleading</strong> because it’s capturing confounding effects</li>
+<li>Lower R² than StressSurvey regression (0.901) but worse bias</li>
+</ul></li>
+</ol>
+<p><strong>Statistical Concerns:</strong> - <strong>Residual clustering</strong> by stress levels suggests systematic bias - <strong>Model overfitting</strong> to the confounding relationship - <strong>Coefficients are completely meaningless</strong> as causal effects - <strong>Time appears to have massive effect</strong> on Anxiety, but this is entirely spurious</p>
+<p><strong>Comparison with StressSurvey Regression:</strong> - <strong>StressSurvey</strong>: R² = 0.901, slope = 1.047 (3x true) - <strong>Time</strong>: R² = 0.563, slope = 5.341 (53x true) - <strong>Time regression has much worse bias</strong> but lower R² - <strong>Both suffer from omitted variable bias</strong>, but Time is more severely affected</p>
+<p><strong>Recommendations:</strong> - <strong>Include Stress as a control variable</strong> in the regression - <strong>Be extremely cautious</strong> interpreting the Time coefficient - <strong>Consider the true relationship</strong>: Anxiety = Stress + 0.1×Time - <strong>Avoid any causal interpretation</strong> of the coefficient</p>
+<p><strong>Conclusion:</strong> The scatter plot shows data points clustering by Stress levels, with the regression line appearing to connect these clusters. This visual pattern clearly demonstrates that the regression is capturing the confounding relationship between Time and Stress, not the true causal effect of Time on Anxiety. The steep slope (5.34) is entirely spurious due to the omitted variable problem, making this an extreme example of how omitted variable bias can create completely misleading results.</p>
 </section>
 </section>
-<section id="question-5-multiple-regression-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="question-5-multiple-regression-analysis">Question 5: Multiple Regression Analysis</h2>
+<section id="question-5-run-a-multiple-regression-of-anxiety-on-both-stresssurvey-and-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="question-5-run-a-multiple-regression-of-anxiety-on-both-stresssurvey-and-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship">Question 5: Run a multiple regression of Anxiety on both StressSurvey and Time. What are the estimated coefficients? How do they compare to the true relationship?</h2>
 <section id="multiple-regression-anxiety-on-stresssurvey-and-time" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-regression-anxiety-on-stresssurvey-and-time">Multiple Regression: Anxiety on StressSurvey and Time</h3>
-<div id="04d09b11" class="cell" data-execution_count="15">
+<div id="1486d935" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-stdout">
 <pre><code>=== MULTIPLE REGRESSION RESULTS ===
 Intercept (β₀): 0.5888
@@ -390,106 +387,79 @@ Anxiety = 0.5888 + 1.4269 × StressSurvey + -2.7799 × Time</code></pre>
 </div>
 </div>
 </section>
-<section id="comparison-with-true-relationship-2" class="level3">
-<h3 class="anchored" data-anchor-id="comparison-with-true-relationship-2">Comparison with True Relationship</h3>
-<div id="10f55470" class="cell" data-execution_count="16">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-=== TRUE RELATIONSHIP ANALYSIS ===
-True relationship: Anxiety = Stress + 0.1 × Time
-Since StressSurvey = 3 × Stress:
-True relationship: Anxiety = (StressSurvey/3) + 0.1 × Time
-True StressSurvey coefficient: 1/3 = 0.3333
-True Time coefficient: 0.1000
-True intercept: 0.0000 (no constant term in true relationship)
-
-=== COMPARISON ===
-Estimated StressSurvey coefficient: 1.4269
-True StressSurvey coefficient: 0.3333
-Difference: 1.0936
-Estimated Time coefficient: -2.7799
-True Time coefficient: 0.1000
-Difference: -2.8799
-Estimated intercept: 0.5888
-True intercept: 0.0000
-Difference: 0.5888
-
-=== MULTIPLE REGRESSION FIT STATISTICS ===
-RMSE: 1.1930
-MAE: 1.0305
-Correlation between StressSurvey and Time: 0.8819</code></pre>
-</div>
-</div>
-</section>
-<section id="residuals-analysis-for-multiple-regression" class="level3">
-<h3 class="anchored" data-anchor-id="residuals-analysis-for-multiple-regression">Residuals Analysis for Multiple Regression</h3>
-<div id="152e1bb0" class="cell" data-execution_count="17">
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="index_files/figure-html/cell-18-output-1.png" width="1143" height="756" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>=== RESIDUAL ANALYSIS FOR MULTIPLE REGRESSION ===
-Mean of residuals: 0.000000
-Std of residuals: 1.2349
-Min residual: -1.3904
-Max residual: 2.2912</code></pre>
-</div>
-</div>
-</section>
-<section id="detailed-commentary-on-multiple-regression" class="level3">
-<h3 class="anchored" data-anchor-id="detailed-commentary-on-multiple-regression">Detailed Commentary on Multiple Regression</h3>
-<div id="35404668" class="cell" data-execution_count="18">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== DETAILED COMMENTARY ON MULTIPLE REGRESSION ===
-
-STRENGTHS:
-• Both StressSurvey and Time coefficients are much closer to true values
-• R² is very high, indicating excellent fit
-• Residuals are well-behaved with no obvious patterns
-• The model successfully controls for both variables
-
-COEFFICIENT ACCURACY:
-• StressSurvey coefficient: Very close to true value (1/3)
-• Time coefficient: Very close to true value (0.1)
-• Intercept: Close to true value (0)
-• This demonstrates the power of including all relevant variables
-
-COMPARISON WITH BIVARIATE REGRESSIONS:
-• StressSurvey bivariate: slope = 1.047 (3x true), R² = 0.901
-• Time bivariate: slope = 5.341 (53x true), R² = 0.563
-• Multiple regression: both coefficients accurate, R² = 0.999+
-• This shows how omitted variable bias is resolved by including all variables
-
-STATISTICAL INTERPRETATION:
-• The multiple regression successfully isolates the true effects
-• StressSurvey coefficient captures the true Stress effect (scaled by 3)
-• Time coefficient captures the true Time effect (0.1)
-• No confounding bias because both variables are controlled for
-
-KEY INSIGHTS:
-• Multiple regression eliminates omitted variable bias
-• Both coefficients are now interpretable as causal effects
-• The high R² reflects the true relationship in the data
-• This demonstrates the importance of proper model specification
-
-RECOMMENDATIONS:
-• Always include all relevant variables in regression models
-• Be cautious of bivariate regressions when variables are correlated
-• Multiple regression is essential for causal inference
-• The true relationship is: Anxiety = Stress + 0.1×Time</code></pre>
-</div>
-</div>
+<section id="answer-4" class="level3">
+<h3 class="anchored" data-anchor-id="answer-4">Answer</h3>
+<p><strong>Estimated Coefficients:</strong> - <strong>Intercept (β₀)</strong>: 0.5888 - <strong>StressSurvey coefficient (β₁)</strong>: 1.4269 - <strong>Time coefficient (β₂)</strong>: -2.7799 - <strong>R² Score</strong>: 0.9350</p>
+<p><strong>True Relationship:</strong> The true relationship in the data is: <strong>Anxiety = Stress + 0.1 × Time</strong></p>
+<p>Since StressSurvey = 3 × Stress, the true relationship in terms of StressSurvey is: <strong>Anxiety = (StressSurvey/3) + 0.1 × Time</strong></p>
+<p>Therefore: - <strong>True StressSurvey coefficient</strong>: 1/3 = 0.3333 - <strong>True Time coefficient</strong>: 0.1000 - <strong>True intercept</strong>: 0.0000 (no constant term in true relationship)</p>
+<p><strong>Comparison to True Relationship:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient</th>
+<th>Estimated</th>
+<th>True</th>
+<th>Difference</th>
+<th>Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>StressSurvey</strong></td>
+<td>1.4269</td>
+<td>0.3333</td>
+<td>+1.0936</td>
+<td><strong>4.3x too large</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Time</strong></td>
+<td>-2.7799</td>
+<td>0.1000</td>
+<td>-2.8799</td>
+<td><strong>Wrong sign &amp; magnitude</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Intercept</strong></td>
+<td>0.5888</td>
+<td>0.0000</td>
+<td>+0.5888</td>
+<td><strong>Biased</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Critical Issues Identified:</strong></p>
+<ol type="1">
+<li><strong>Severe Multicollinearity Problem</strong>
+<ul>
+<li>StressSurvey and Time correlation = 0.882 (extremely high!)</li>
+<li>Variables are too highly correlated to be separated in regression</li>
+<li>This prevents accurate coefficient estimation</li>
+</ul></li>
+<li><strong>Wrong Sign for Time Coefficient</strong>
+<ul>
+<li>Estimated Time coefficient: -2.78</li>
+<li>True Time coefficient: +0.1</li>
+<li><strong>Coefficient has completely wrong sign and magnitude</strong></li>
+</ul></li>
+<li><strong>Still Biased Coefficients</strong>
+<ul>
+<li>StressSurvey coefficient is 4.3x too large (1.43 vs 0.33)</li>
+<li>Even with both variables included, coefficients are severely biased</li>
+<li>High R² (0.935) is misleading because coefficients are meaningless</li>
+</ul></li>
+</ol>
+<p><strong>Why Multiple Regression Failed:</strong> - <strong>Multicollinearity</strong> prevents separation of StressSurvey and Time effects - <strong>High correlation (0.882)</strong> makes it impossible to isolate individual effects - <strong>Variables are too similar</strong> to be included together in regression - <strong>Classic case</strong> where multiple regression doesn’t solve omitted variable bias</p>
+<p><strong>Comparison with Bivariate Regressions:</strong> - <strong>StressSurvey bivariate</strong>: slope = 1.047 (3x true), R² = 0.901 - <strong>Time bivariate</strong>: slope = 5.341 (53x true), R² = 0.563 - <strong>Multiple regression</strong>: StressSurvey = 1.43 (4.3x true), Time = -2.78 (wrong sign), R² = 0.935 - <strong>Multiple regression has worse bias</strong> than bivariate regressions due to multicollinearity</p>
+<p><strong>Key Insights:</strong> - <strong>Multiple regression doesn’t always solve omitted variable bias</strong> - <strong>Multicollinearity can make multiple regression worse</strong> than bivariate regressions - <strong>High correlation between variables</strong> prevents accurate coefficient estimation - <strong>R² can be misleading</strong> when coefficients are meaningless due to multicollinearity</p>
+<p><strong>Conclusion:</strong> This demonstrates that <strong>multiple regression can fail completely</strong> when there’s severe multicollinearity between the included variables. The Time coefficient has the wrong sign (-2.78 vs +0.1), and the StressSurvey coefficient is still severely biased (4.3x too large). The high R² is misleading because the coefficients are meaningless due to the multicollinearity problem. This is a classic example of how <strong>correlated variables can prevent multiple regression from working properly</strong>.</p>
 </section>
 </section>
-<section id="question-6-multiple-regression-analysis---stress-and-time" class="level2">
-<h2 class="anchored" data-anchor-id="question-6-multiple-regression-analysis---stress-and-time">Question 6: Multiple Regression Analysis - Stress and Time</h2>
+<section id="question-6-run-a-multiple-regression-of-anxiety-on-both-stress-and-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship" class="level2">
+<h2 class="anchored" data-anchor-id="question-6-run-a-multiple-regression-of-anxiety-on-both-stress-and-time.-what-are-the-estimated-coefficients-how-do-they-compare-to-the-true-relationship">Question 6: Run a multiple regression of Anxiety on both Stress and Time. What are the estimated coefficients? How do they compare to the true relationship?</h2>
 <section id="multiple-regression-anxiety-on-stress-and-time" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-regression-anxiety-on-stress-and-time">Multiple Regression: Anxiety on Stress and Time</h3>
-<div id="95572a58" class="cell" data-execution_count="19">
+<div id="f6337ee9" class="cell" data-execution_count="7">
 <div class="cell-output cell-output-stdout">
 <pre><code>=== STRESS-TIME MULTIPLE REGRESSION RESULTS ===
 Intercept (β₀): -0.0000
@@ -502,98 +472,255 @@ Anxiety = -0.0000 + 1.0000 × Stress + 0.1000 × Time</code></pre>
 </div>
 </div>
 </section>
-<section id="comparison-with-true-relationship-3" class="level3">
-<h3 class="anchored" data-anchor-id="comparison-with-true-relationship-3">Comparison with True Relationship</h3>
-<div id="9743abf7" class="cell" data-execution_count="20">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-=== TRUE RELATIONSHIP ANALYSIS ===
-True relationship: Anxiety = Stress + 0.1 × Time
-True Stress coefficient: 1.0000
-True Time coefficient: 0.1000
-True intercept: 0.0000 (no constant term in true relationship)
-
-=== COMPARISON ===
-Estimated Stress coefficient: 1.0000
-True Stress coefficient: 1.0000
-Difference: -0.0000
-Estimated Time coefficient: 0.1000
-True Time coefficient: 0.1000
-Difference: 0.0000
-Estimated intercept: -0.0000
-True intercept: 0.0000
-Difference: -0.0000
-
-=== STRESS-TIME REGRESSION FIT STATISTICS ===
-RMSE: 0.0000
-MAE: 0.0000
-Correlation between Stress and Time: 0.7441</code></pre>
-</div>
-</div>
+<section id="comparison-with-true-relationship" class="level3">
+<h3 class="anchored" data-anchor-id="comparison-with-true-relationship">Comparison with True Relationship</h3>
 </section>
-<section id="residuals-analysis-for-stress-time-regression" class="level3">
-<h3 class="anchored" data-anchor-id="residuals-analysis-for-stress-time-regression">Residuals Analysis for Stress-Time Regression</h3>
-<div id="05c64220" class="cell" data-execution_count="21">
+<section id="scatter-plot-stress-vs-anxiety" class="level3">
+<h3 class="anchored" data-anchor-id="scatter-plot-stress-vs-anxiety">Scatter Plot: Stress vs Anxiety</h3>
+<div id="4a0742fd" class="cell" data-execution_count="8">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-22-output-1.png" width="1143" height="756" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-9-output-1.png" width="759" height="564" class="figure-img"></p>
 </figure>
 </div>
 </div>
+</div>
+</section>
+<section id="answer-5" class="level3">
+<h3 class="anchored" data-anchor-id="answer-5">Answer</h3>
+<p><strong>Estimated Coefficients:</strong> - <strong>Intercept (β₀)</strong>: 0.0000 - <strong>Stress coefficient (β₁)</strong>: 1.0000 - <strong>Time coefficient (β₂)</strong>: 0.1000 - <strong>R² Score</strong>: 1.0000 (perfect fit!)</p>
+<p><strong>True Relationship:</strong> The true relationship in the data is: <strong>Anxiety = Stress + 0.1 × Time</strong></p>
+<p>Therefore: - <strong>True Stress coefficient</strong>: 1.0000 - <strong>True Time coefficient</strong>: 0.1000 - <strong>True intercept</strong>: 0.0000 (no constant term in true relationship)</p>
+<p><strong>Comparison to True Relationship:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient</th>
+<th>Estimated</th>
+<th>True</th>
+<th>Difference</th>
+<th>Accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Stress</strong></td>
+<td>1.0000</td>
+<td>1.0000</td>
+<td>0.0000</td>
+<td><strong>Perfect match</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Time</strong></td>
+<td>0.1000</td>
+<td>0.1000</td>
+<td>0.0000</td>
+<td><strong>Perfect match</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Intercept</strong></td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td><strong>Perfect match</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outstanding Results:</strong></p>
+<ol type="1">
+<li><strong>Perfect Coefficient Accuracy</strong>
+<ul>
+<li>All coefficients match the true values exactly</li>
+<li>No bias whatsoever in any coefficient</li>
+<li>This demonstrates the power of using the correct variables</li>
+</ul></li>
+<li><strong>Perfect Model Fit</strong>
+<ul>
+<li>R² = 1.0000 (perfect fit with no error)</li>
+<li>RMSE = 0.0000 (no prediction errors)</li>
+<li>MAE = 0.0000 (no prediction errors)</li>
+<li>Residuals = 0.0000 (perfect predictions)</li>
+</ul></li>
+<li><strong>No Statistical Issues</strong>
+<ul>
+<li>No omitted variable bias (both variables included)</li>
+<li>No multicollinearity problems (manageable correlation = 0.744)</li>
+<li>No confounding bias (both variables properly controlled)</li>
+<li>Perfect residual behavior with no patterns</li>
+</ul></li>
+</ol>
+<p><strong>Comparison with All Previous Regressions:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 30%">
+<col style="width: 12%">
+<col style="width: 8%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Regression Type</th>
+<th>StressSurvey</th>
+<th>Time</th>
+<th>R²</th>
+<th>Issues</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>StressSurvey bivariate</strong></td>
+<td>1.047 (3x true)</td>
+<td>-</td>
+<td>0.901</td>
+<td>Omitted variable bias</td>
+</tr>
+<tr class="even">
+<td><strong>Time bivariate</strong></td>
+<td>-</td>
+<td>5.341 (53x true)</td>
+<td>0.563</td>
+<td>Severe omitted variable bias</td>
+</tr>
+<tr class="odd">
+<td><strong>StressSurvey+Time multiple</strong></td>
+<td>1.427 (4.3x true)</td>
+<td>-2.78 (wrong sign)</td>
+<td>0.935</td>
+<td>Multicollinearity</td>
+</tr>
+<tr class="even">
+<td><strong>Stress+Time multiple</strong></td>
+<td>1.000 (perfect)</td>
+<td>0.100 (perfect)</td>
+<td>1.000</td>
+<td><strong>No issues</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Insights:</strong> - <strong>Using original variables eliminates all bias</strong> - <strong>Multiple regression works perfectly</strong> when variables are properly specified - <strong>No multicollinearity issues</strong> with manageable correlation (0.744) - <strong>Perfect coefficient recovery</strong> of the true relationship - <strong>High R² reflects true relationship</strong> rather than confounding</p>
+<p><strong>Critical Success Factors:</strong> 1. <strong>Used actual variables</strong> from the true relationship (Stress, Time) 2. <strong>Avoided transformed variables</strong> (StressSurvey) that introduce bias 3. <strong>Included both relevant variables</strong> to eliminate omitted variable bias 4. <strong>Variables were not too highly correlated</strong> to cause multicollinearity</p>
+<p><strong>Conclusion:</strong> This demonstrates that <strong>multiple regression can work perfectly</strong> when we use the actual variables from the true relationship. All coefficients are exactly correct (1.0 for Stress, 0.1 for Time, 0 for intercept), and the model achieves perfect fit (R² = 1.0). This shows the critical importance of <strong>proper variable selection</strong> and using <strong>original variables rather than transformations</strong> when possible. The true relationship <strong>Anxiety = Stress + 0.1×Time</strong> is perfectly recoverable with the right variables.</p>
+</section>
+</section>
+<section id="question-7-model-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="question-7-model-comparison">Question 7: Model Comparison</h2>
+<section id="model-comparison-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="model-comparison-analysis">Model Comparison Analysis</h3>
+<div id="1dddbf60" class="cell" data-execution_count="9">
 <div class="cell-output cell-output-stdout">
-<pre><code>=== RESIDUAL ANALYSIS FOR STRESS-TIME REGRESSION ===
-Mean of residuals: 0.000000
-Std of residuals: 0.0000
-Min residual: -0.0000
-Max residual: 0.0000</code></pre>
+<pre><code>=== MODEL 1: StressSurvey + Time ===
+R²: 0.9350
+StressSurvey coefficient: 1.4269
+Time coefficient: -2.7799
+Intercept: 0.5888
+
+=== MODEL 2: Stress + Time ===
+R²: 1.0000
+Stress coefficient: 1.0000
+Time coefficient: 0.1000
+Intercept: -0.0000
+
+=== CORRELATION ANALYSIS ===
+StressSurvey-Time correlation: 0.8819
+Stress-Time correlation: 0.7441
+
+=== TRUE RELATIONSHIP ===
+True Stress coefficient: 1.0000
+True Time coefficient: 0.1000
+True StressSurvey coefficient: 0.3333 (1/3)
+True intercept: 0.0000</code></pre>
 </div>
 </div>
 </section>
-<section id="detailed-commentary-on-stress-time-regression" class="level3">
-<h3 class="anchored" data-anchor-id="detailed-commentary-on-stress-time-regression">Detailed Commentary on Stress-Time Regression</h3>
-<div id="17c98d1c" class="cell" data-execution_count="22">
-<div class="cell-output cell-output-stdout">
-<pre><code>=== DETAILED COMMENTARY ON STRESS-TIME REGRESSION ===
-
-EXCELLENT RESULTS:
-• Both Stress and Time coefficients are very close to true values
-• R² is extremely high, indicating perfect fit
-• Residuals are minimal with no systematic patterns
-• The model successfully captures the true relationship
-
-COEFFICIENT ACCURACY:
-• Stress coefficient: Very close to true value (1.0)
-• Time coefficient: Very close to true value (0.1)
-• Intercept: Very close to true value (0)
-• This demonstrates the power of using the correct variables
-
-COMPARISON WITH PREVIOUS REGRESSIONS:
-• StressSurvey bivariate: slope = 1.047 (3x true), R² = 0.901
-• Time bivariate: slope = 5.341 (53x true), R² = 0.563
-• StressSurvey+Time multiple: both biased, R² = 0.935
-• Stress+Time multiple: both accurate, R² = 0.999+
-• This shows the importance of using the correct variables
-
-STATISTICAL INTERPRETATION:
-• The regression successfully isolates the true effects
-• Stress coefficient captures the true Stress effect (1.0)
-• Time coefficient captures the true Time effect (0.1)
-• No bias because we're using the actual variables from the true relationship
-
-KEY INSIGHTS:
-• Using the correct variables eliminates all bias
-• Both coefficients are now interpretable as true causal effects
-• The high R² reflects the true relationship in the data
-• This demonstrates the importance of proper variable selection
-
-RECOMMENDATIONS:
-• Always use the actual variables from the true relationship when possible
-• Avoid transformed variables (like StressSurvey) when the original exists
-• Multiple regression works perfectly when variables are properly specified
-• The true relationship is: Anxiety = Stress + 0.1×Time</code></pre>
-</div>
-</div>
+<section id="answer-6" class="level3">
+<h3 class="anchored" data-anchor-id="answer-6">Answer</h3>
+<p><strong>R-squared Comparison:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 46%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>R²</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>StressSurvey + Time</strong></td>
+<td>0.935</td>
+<td>High fit, but misleading due to multicollinearity</td>
+</tr>
+<tr class="even">
+<td><strong>Stress + Time</strong></td>
+<td>1.000</td>
+<td>Perfect fit, reflects true relationship</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coefficient Comparison:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 27%">
+<col style="width: 21%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Model 1 (StressSurvey+Time)</th>
+<th>Model 2 (Stress+Time)</th>
+<th>True Value</th>
+<th>Model 1 Bias</th>
+<th>Model 2 Bias</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Stress/StressSurvey</strong></td>
+<td>1.4269</td>
+<td>1.0000</td>
+<td>1.0000/0.3333</td>
+<td>4.3x too large</td>
+<td>Perfect</td>
+</tr>
+<tr class="even">
+<td><strong>Time</strong></td>
+<td>-2.7799</td>
+<td>0.1000</td>
+<td>0.1000</td>
+<td>Wrong sign &amp; magnitude</td>
+<td>Perfect</td>
+</tr>
+<tr class="odd">
+<td><strong>Intercept</strong></td>
+<td>0.5888</td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td>Biased</td>
+<td>Perfect</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Statistical Significance Analysis:</strong></p>
+<p><strong>Model 1 (StressSurvey + Time):</strong> - <strong>High R² (0.935)</strong> but coefficients are <strong>statistically meaningless</strong> - <strong>Time coefficient has wrong sign</strong> (-2.78 vs +0.1) - <strong>Multicollinearity problem</strong> (correlation = 0.882) prevents accurate estimation</p>
+<p><strong>Model 2 (Stress + Time):</strong> - <strong>Perfect R² (1.000)</strong> with <strong>statistically perfect coefficients</strong> - <strong>All coefficients exactly match true values</strong> - <strong>Manageable correlation (0.744)</strong> allows proper separation</p>
+<p><strong>Real-World Implications:</strong></p>
+<ol type="1">
+<li><p><strong>Variable Selection is Critical</strong> - Using original variables (Stress, Time) leads to perfect results, while transformed variables (StressSurvey) introduce severe bias</p></li>
+<li><p><strong>Multicollinearity Can Destroy Models</strong> - High correlation (0.882) between StressSurvey and Time prevents separation, while lower correlation (0.744) between Stress and Time allows proper estimation</p></li>
+<li><p><strong>R² Can Be Misleading</strong> - Model 1 has high R² (0.935) but meaningless coefficients, while Model 2 has perfect R² (1.000) with perfect coefficients</p></li>
+<li><p><strong>Multiple Regression Success is Not Guaranteed</strong> - Including both variables doesn’t always solve omitted variable bias; proper variable selection is more important than model complexity</p></li>
+</ol>
+<p><strong>Conclusion:</strong> Model 1 shows how high R² can be misleading when coefficients are biased due to multicollinearity, while Model 2 shows how proper variable selection leads to perfect results. <strong>Variable choice and multicollinearity assessment are more important than model complexity</strong> for reliable statistical inference.</p>
 </section>
 </section>
 </section>
