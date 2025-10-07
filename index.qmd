@@ -349,4 +349,5 @@ print("• StressSurvey regression had higher R² but severely biased coefficien
 print("• This illustrates the trade-off between fit and bias")
 ```
 
-### Overall, 
+### Overall, the estimated coefficients include intercept: -3.6801, slope= 5.3406, and R^2 score: 0.5630. The difference between estimated and true slope is +5.2406 so the estimated slope is 53 times larger than true slope. The intercept difference is -8.2801 so the estimated intercept is severly biased. This shows that omitted variable bias can be much more siginificant when the omitted variable, Stress, has a stronger relationship with the outcome Anxiety than the included variable (Time).
+
