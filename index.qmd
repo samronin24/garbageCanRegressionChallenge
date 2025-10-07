@@ -3,43 +3,13 @@ title: "Garbage Can Regression Challenge"
 format:
   html: default
 execute:
-  echo: true
+  echo: false
   eval: true
 ---
 
 # Garbage Can Regression Challenge
 
 **Choose R or Python and delete the other code chunk.**
-
-## R Code
-
-```{r}
-#| echo: true
-library(tidyverse)
-library(broom)
-
-# Data with known true relationships: Anxiety = Stress + 0.1 × Time
-observDF <- tribble(
-  ~Stress, ~StressSurvey, ~Time, ~Anxiety,
-  0,0,0,0,
-  0,0,1,0.1,
-  0,0,1,0.1,
-  1,3,1,1.1,
-  1,3,1,1.1,
-  1,3,1,1.1,
-  2,6,2,2.2,
-  2,6,2,2.2,
-  2,6,2,2.2,
-  8,9,2,8.2,
-  8,9,2,8.2,
-  8,9,2.1,8.21,
-  12,12,2.2,12.22,
-  12,12,2.2,12.22,
-  12,12,2.2,12.22
-)
-
-observDF
-```
 
 ## Python Code
 
@@ -67,4 +37,110 @@ print(observDF)
 
 ## Your Analysis
 
-Follow the challenge instructions from your course to complete your analysis.
+### Bivariate Regression: Anxiety on StressSurvey
+
+```{python}
+#| echo: false
+# Prepare data for regression
+X = observDF[['StressSurvey']]  # Independent variable
+y = observDF['Anxiety']         # Dependent variable
+
+# Fit the regression model
+model = LinearRegression()
+model.fit(X, y)
+
+# Get coefficients
+intercept = model.intercept_
+slope = model.coef_[0]
+
+print(f"Regression Results:")
+print(f"Intercept (β₀): {intercept:.4f}")
+print(f"Slope (β₁): {slope:.4f}")
+print(f"R² Score: {model.score(X, y):.4f}")
+
+# Create predictions
+y_pred = model.predict(X)
+
+# Display the regression equation
+print(f"\nEstimated Regression Equation:")
+print(f"Anxiety = {intercept:.4f} + {slope:.4f} × StressSurvey")
+```
+
+### Comparison with True Relationship
+
+```{python}
+#| echo: true
+# True relationship: Anxiety = Stress + 0.1 × Time
+# Let's calculate what the true relationship would be for StressSurvey
+
+# Since StressSurvey appears to be a scaled version of Stress (StressSurvey = 3 × Stress)
+# The true relationship in terms of StressSurvey would be:
+# Anxiety = (StressSurvey/3) + 0.1 × Time
+
+# Calculate true values for comparison
+true_anxiety = observDF['Stress'] + 0.1 * observDF['Time']
+
+print(f"\nTrue Relationship Analysis:")
+print(f"True relationship: Anxiety = Stress + 0.1 × Time")
+print(f"Since StressSurvey = 3 × Stress, true relationship in terms of StressSurvey is:")
+print(f"Anxiety = (StressSurvey/3) + 0.1 × Time")
+print(f"True slope coefficient for StressSurvey: 1/3 = {1/3:.4f}")
+print(f"True intercept: varies with Time, but base intercept ≈ 0.1 × mean(Time)")
+
+# Calculate mean time to estimate true intercept
+mean_time = observDF['Time'].mean()
+true_intercept_approx = 0.1 * mean_time
+print(f"Approximate true intercept: 0.1 × {mean_time:.2f} = {true_intercept_approx:.4f}")
+
+print(f"\nComparison:")
+print(f"Estimated slope: {slope:.4f}")
+print(f"True slope: {1/3:.4f}")
+print(f"Difference: {slope - (1/3):.4f}")
+print(f"Estimated intercept: {intercept:.4f}")
+print(f"Approximate true intercept: {true_intercept_approx:.4f}")
+print(f"Difference: {intercept - true_intercept_approx:.4f}")
+```
+
+### Visualization
+
+```{python}
+#| echo: false
+# Create visualization
+plt.figure(figsize=(10, 6))
+
+# Scatter plot of actual data
+plt.scatter(observDF['StressSurvey'], observDF['Anxiety'], 
+           color='blue', alpha=0.7, label='Actual Data', s=50)
+
+# Plot regression line
+stress_survey_range = np.linspace(observDF['StressSurvey'].min(), 
+                                 observDF['StressSurvey'].max(), 100)
+regression_line = intercept + slope * stress_survey_range
+plt.plot(stress_survey_range, regression_line, 
+         color='red', linewidth=2, label=f'Regression Line: y = {intercept:.3f} + {slope:.3f}x')
+
+# Plot true relationship
+true_line = (1/3) * stress_survey_range + 0.1 * mean_time
+plt.plot(stress_survey_range, true_line, 
+         color='green', linewidth=2, linestyle='--', 
+         label=f'True Relationship: y = {1/3:.3f}x + {0.1 * mean_time:.3f}')
+
+plt.xlabel('StressSurvey')
+plt.ylabel('Anxiety')
+plt.title('Bivariate Regression: Anxiety on StressSurvey')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.show()
+
+# Residuals analysis
+residuals = y - y_pred
+plt.figure(figsize=(8, 4))
+plt.scatter(y_pred, residuals, alpha=0.7)
+plt.axhline(y=0, color='red', linestyle='--')
+plt.xlabel('Predicted Anxiety')
+plt.ylabel('Residuals')
+plt.title('Residuals vs Predicted Values')
+plt.grid(True, alpha=0.3)
+plt.show()
+```
+
