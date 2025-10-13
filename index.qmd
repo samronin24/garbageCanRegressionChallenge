@@ -756,10 +756,10 @@ Model 1 shows how high R² can be misleading when coefficients are biased due to
 **Audience Interpretation Analysis:**
 
 **Typical Parent (Confirmation Bias):**
-- **Will believe Model 1** because it confirms their existing fears about social media
-- **Headlines about "278% increase"** will be shared widely on social media
-- **"I knew it!"** reaction - validates pre-existing concerns about children's screen time
-- **Will use Model 1 results** to justify restricting social media access
+- **Will believe Model 1** because it shows social media DECREASES anxiety (confirms it's beneficial)
+- **Headlines about "2.78 unit decrease"** will be shared widely on social media
+- **"I knew it!"** reaction - validates that social media isn't harmful
+- **Will use Model 1 results** to justify allowing more social media access
 - **Confirmation bias** makes them more likely to trust the dramatic results
 
 **Social Media Executives (Facebook, Instagram, TikTok):**
@@ -787,51 +787,6 @@ Model 1 shows how high R² can be misleading when coefficients are biased due to
 - **Same underlying data** - completely different policy implications
 - **Headlines determine public perception** - not the actual statistical accuracy
 
-**Why This Matters:**
-
-1. **Model 1 Results Are More "Newsworthy"**
-   - **Dramatic numbers** (2.78 unit decrease) get more clicks and shares
-   - **Benefit-based headlines** generate more engagement
-   - **Confirmation bias** makes people more likely to believe and share
-
-2. **Model 2 Results Are More "Business-Friendly"**
-   - **Minimal harm** doesn't threaten business models
-   - **Lower regulatory pressure** from governments
-   - **Better for investor confidence** and stock prices
-
-3. **The Real Problem:**
-   - **Both models are based on the same data** but tell completely different stories
-   - **Model 1 is statistically wrong** but more attention-grabbing
-   - **Model 2 is statistically correct** but less dramatic
-   - **Popular press will likely focus on Model 1** because it's more sensational
-
-4. **Confirmation Bias in Action:**
-   - **Parents already believe** social media is harmful, so Model 1 confirms their bias
-   - **Tech executives already believe** their platforms are safe, so Model 2 confirms their bias
-   - **Both groups will cherry-pick** the model that supports their existing beliefs
-
-**THE HEADLINE IMPACT:**
-
-**Model 1 Headlines Lead To:**
-- **"SHOCKING: Social Media Time INCREASES Anxiety by 278% - New Research"**
-- **Parents panic** and implement extreme screen time restrictions
-- **Policymakers create draconian regulations** based on "crisis" evidence
-- **Tech companies face massive lawsuits** for "proven" harm
-- **Media coverage dominates** with fear-based messaging
-
-**Model 2 Headlines Lead To:**
-- **"New Study: Social Media Time Has Only 10% Impact on Anxiety"**
-- **Parents relax** about moderate screen time use
-- **Policymakers focus on other issues** since impact is "minimal"
-- **Tech companies avoid regulation** based on "low harm" evidence
-- **Media coverage is minimal** with balanced messaging
-
-**THE SAME DATA, COMPLETELY DIFFERENT OUTCOMES:**
-- **Model 1**: 278% increase → Crisis response, extreme restrictions, panic
-- **Model 2**: 10% increase → Balanced approach, moderate concern, calm
-- **Same underlying data** - completely different policy outcomes
-- **Headlines determine public response** - not statistical accuracy
-
 **Why This Is Dangerous:**
 - **Bad science drives bad policy** when sensational results get more attention than accurate ones
 - **Confirmation bias prevents learning** from accurate but less dramatic results
@@ -847,7 +802,8 @@ Model 1 shows how high R² can be misleading when coefficients are biased due to
 - **Educate the public** about the difference between correlation and causation
 
 **Conclusion:**
-This demonstrates how **statistical results can be weaponized** by different stakeholders to support their agendas. Model 1's dramatic but incorrect results will likely dominate popular press coverage due to their sensational nature, while Model 2's accurate but less dramatic results will be preferred by tech companies. **This creates a dangerous feedback loop where bad science drives bad policy, and confirmation bias prevents learning from accurate results.** The stakes are too high to let statistical illiteracy determine policy decisions.
+This demonstrates how **statistical results can be weaponized** by different stakeholders to support their agendas. Model 1's dramatic but incorrect results (showing social media decreases anxiety) will likely dominate popular press coverage due to their sensational nature, while Model 2's accurate but less dramatic results will be preferred by tech companies. **This creates a dangerous feedback loop where bad science drives bad policy, and confirmation bias prevents learning from accurate results.** The stakes are too high to let statistical illiteracy determine policy decisions.
+
 
 ## Question 9: Smart Subset Analysis
 
@@ -1030,5 +986,3 @@ I chose the **"Low Time (0-1.5)" subset** because:
 
 **Conclusion:**
 The smart subset approach successfully **avoids the multicollinearity trap** by focusing on data where StressSurvey and Time are less correlated. This allows the regression to recover the true relationship perfectly, demonstrating that **smart data selection can be more important than complex statistical techniques**. The results are both **statistically significant and close to the true relationship**, proving that **thoughtful subset selection can overcome the limitations of "canned" regressions**. **This approach should be the standard for policy-relevant research** because it provides accurate, actionable insights that actually help people.
-
-### Question 9: Avoiding Misleading Statistical Significance
