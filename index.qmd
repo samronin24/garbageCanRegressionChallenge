@@ -62,6 +62,36 @@ print(f"\nEstimated Regression Equation:")
 print(f"Anxiety = {intercept:.4f} + {slope:.4f} × StressSurvey")
 ```
 
+### Scatter Plot with Regression Line
+
+```{python}
+#| echo: false
+# Create scatter plot with regression line for StressSurvey vs Anxiety
+plt.figure(figsize=(8, 6))
+plt.scatter(observDF['StressSurvey'], observDF['Anxiety'],
+           color='blue', alpha=0.8, label='Actual Data', s=80, edgecolors='black', linewidth=0.5)
+
+# Create regression line
+stress_survey_range = np.linspace(observDF['StressSurvey'].min(),
+                                 observDF['StressSurvey'].max(), 100)
+regression_line = intercept + slope * stress_survey_range
+plt.plot(stress_survey_range, regression_line,
+         color='red', linewidth=3, label=f'Regression Line: y = {intercept:.3f} + {slope:.3f}x')
+
+# Add R² text
+plt.text(0.05, 0.95, f'R² = {model.score(X, y):.3f}',
+         transform=plt.gca().transAxes, fontsize=12,
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+plt.xlabel('StressSurvey', fontsize=12)
+plt.ylabel('Anxiety', fontsize=12)
+plt.title('Bivariate Regression: Anxiety on StressSurvey\nScatter Plot with Regression Line', fontsize=14, fontweight='bold')
+plt.legend(fontsize=11)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
+
 ### Answer
 
 **Estimated Coefficients:**
@@ -219,6 +249,36 @@ y_pred_time = model_time.predict(X_time)
 # Display the regression equation
 print(f"\nEstimated Regression Equation:")
 print(f"Anxiety = {intercept_time:.4f} + {slope_time:.4f} × Time")
+```
+
+### Scatter Plot with Regression Line
+
+```{python}
+#| echo: false
+# Create scatter plot with regression line for Time vs Anxiety
+plt.figure(figsize=(8, 6))
+plt.scatter(observDF['Time'], observDF['Anxiety'],
+           color='green', alpha=0.8, label='Actual Data', s=80, edgecolors='black', linewidth=0.5)
+
+# Create regression line
+time_range = np.linspace(observDF['Time'].min(),
+                        observDF['Time'].max(), 100)
+regression_line_time = intercept_time + slope_time * time_range
+plt.plot(time_range, regression_line_time,
+         color='red', linewidth=3, label=f'Regression Line: y = {intercept_time:.3f} + {slope_time:.3f}x')
+
+# Add R² text
+plt.text(0.05, 0.95, f'R² = {model_time.score(X_time, y_time):.3f}',
+         transform=plt.gca().transAxes, fontsize=12,
+         bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.8))
+
+plt.xlabel('Time', fontsize=12)
+plt.ylabel('Anxiety', fontsize=12)
+plt.title('Bivariate Regression: Anxiety on Time\nScatter Plot with Regression Line', fontsize=14, fontweight='bold')
+plt.legend(fontsize=11)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
 ```
 
 ### Answer
@@ -403,6 +463,46 @@ y_pred_multiple = model_multiple.predict(X_multiple)
 # Display the regression equation
 print(f"\nEstimated Multiple Regression Equation:")
 print(f"Anxiety = {intercept_multiple:.4f} + {slope_stresssurvey:.4f} × StressSurvey + {slope_time:.4f} × Time")
+```
+
+### Scatter Plot with Regression Plane
+
+```{python}
+#| echo: false
+# Create 3D scatter plot for multiple regression
+from mpl_toolkits.mplot3d import Axes3D
+
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Create scatter plot
+scatter = ax.scatter(observDF['StressSurvey'], observDF['Time'], observDF['Anxiety'],
+                    c=observDF['Anxiety'], cmap='viridis', s=100, alpha=0.8, edgecolors='black')
+
+# Create regression plane
+x_range = np.linspace(observDF['StressSurvey'].min(), observDF['StressSurvey'].max(), 20)
+y_range = np.linspace(observDF['Time'].min(), observDF['Time'].max(), 20)
+X_grid, Y_grid = np.meshgrid(x_range, y_range)
+Z_grid = intercept_multiple + slope_stresssurvey * X_grid + slope_time * Y_grid
+
+# Plot the regression plane
+ax.plot_surface(X_grid, Y_grid, Z_grid, alpha=0.3, color='red', linewidth=0, antialiased=True)
+
+# Add colorbar
+plt.colorbar(scatter, ax=ax, shrink=0.5, aspect=20)
+
+ax.set_xlabel('StressSurvey', fontsize=12)
+ax.set_ylabel('Time', fontsize=12)
+ax.set_zlabel('Anxiety', fontsize=12)
+ax.set_title('Multiple Regression: Anxiety on StressSurvey and Time\n3D Scatter Plot with Regression Plane', fontsize=14, fontweight='bold')
+
+# Add R² text
+ax.text2D(0.02, 0.98, f'R² = {model_multiple.score(X_multiple, y_multiple):.3f}',
+          transform=ax.transAxes, fontsize=12,
+          bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.8))
+
+plt.tight_layout()
+plt.show()
 ```
 
 ### Answer
